@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Icon } from 'react-native-elements';
-import { StyleSheet, View } from "react-native"
+import { StyleSheet, View, Text } from "react-native"
 
 export default function ChooseDateTime() {
 
@@ -16,6 +16,7 @@ export default function ChooseDateTime() {
         <View>
             <View style={{ flexDirection: 'row', alignContent: 'space-around' }}>
                 <Icon style={dateTimePickerStyles.icon} size={24} type='font-awesome' name="calendar" />
+                <Text style={dateTimePickerStyles.icon}>Date:</Text>
                 <DateTimePicker
                     style={dateTimePickerStyles.timePicker}
                     value={date}
@@ -24,7 +25,15 @@ export default function ChooseDateTime() {
                 </DateTimePicker>
             </View>
             <View style={{ flexDirection: 'row', alignContent: 'space-around' }}>
-                <Icon style={dateTimePickerStyles.icon} size={24} type='font-awesome' name="right-to-line" />
+                <Icon style={dateTimePickerStyles.icon} size={24} type='font-awesome-5' name="clock" />
+                <Text style={dateTimePickerStyles.icon}>Time:</Text>
+                <DateTimePicker
+                    style={dateTimePickerStyles.timePicker}
+                    value={date}
+                    mode='time'
+                    onChange={onChange}
+                >
+                </DateTimePicker>
                 <DateTimePicker
                     style={dateTimePickerStyles.timePicker}
                     value={date}
@@ -39,7 +48,7 @@ export default function ChooseDateTime() {
 
 const dateTimePickerStyles = StyleSheet.create({
     icon: {
-        padding: 20,
+        padding: 10,
     },
     timePicker: {
         padding: 20,

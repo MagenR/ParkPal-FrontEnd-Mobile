@@ -16,7 +16,7 @@ export default function ShowMap() {
   return (
     <View>
       <GooglePlacesAutocomplete
-        placeholder="Search"
+        placeholder="Search for Location"
         fetchDetails={true}
         nearbyPlacesAPI="GooglePlacesSearch"
         debounce={400}
@@ -61,7 +61,8 @@ const mapStyles = StyleSheet.create({
 const searchInputBoxStyles = StyleSheet.create({
   container: {
     flex: 0,
-    backgroundColor: '#fff',
+    backgroundColor: '#DDDDDF',
+    paddingBottom: 0
   },
   textInput: {
     backgroundColor: "#DDDDDF",
