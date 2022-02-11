@@ -9,7 +9,7 @@ export default function App() {
   return (
     <NavigationContainer>
     <Stack.Navigator initialRouteName="SearchParking">
-      <Stack.Screen name="SearchParking" component={searchParking} options={{ headerShown: false }}/>
+      <Stack.Screen name="SearchParking" component={searchParking} options={{ title: 'Search for Parking' }}/>
       </Stack.Navigator>
   </NavigationContainer>
   );
