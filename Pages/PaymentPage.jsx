@@ -14,7 +14,11 @@ export default function PaymentPage({ navigation, route }) {
 
     return (
         <View style={paymentStyles.container}>
-            <View style={paymentStyles.header}>
+            <View style={paymentStyles.textContainer}>
+                <Text style={paymentStyles.text}>Location:</Text>
+                <Text style={paymentStyles.text}>Date:</Text>
+                <Text style={paymentStyles.text}>Entry Time:</Text>
+                <Text style={paymentStyles.text}>Exit Time:</Text>
             </View>
             <View style={paymentStyles.footer}>
                 <Input
@@ -53,7 +57,7 @@ export default function PaymentPage({ navigation, route }) {
                 <Button
                     title="Purchase"
                     buttonStyle={{
-                        backgroundColor: '#2089dc',
+                        backgroundColor: '#009387',
                         borderWidth: 2,
                         borderColor: 'white',
                         borderRadius: 30,
@@ -68,18 +72,7 @@ export default function PaymentPage({ navigation, route }) {
 const paymentStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#34495e'
-    },
-    text_header: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 20,
-        paddingVertical: 50,
-        paddingHorizontal: 10,
-        flex: 1
-    },
-    header: {
-        flex: 2,
+        backgroundColor: '#009387'
     },
     footer: {
         flex: 0,
@@ -88,5 +81,21 @@ const paymentStyles = StyleSheet.create({
         paddingVertical: 50,
         paddingHorizontal: 30,
         backgroundColor: '#fff'
-    }
+    },
+    text: {
+        backgroundColor: "#009387",
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#fff',
+        padding: 15
+        
+    },
+    textContainer: {
+        flex:2,
+        paddingVertical: 80,
+        paddingHorizontal: 30,
+    },
 });
+
+
+

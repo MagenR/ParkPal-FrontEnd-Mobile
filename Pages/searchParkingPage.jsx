@@ -18,7 +18,7 @@ export default function SearchParkingPage({navigation}) {
             title="Save the parking"
             onPress={()=> navigation.navigate('PaymentPage')}
             buttonStyle={{
-              backgroundColor: '#2089dc',
+              backgroundColor: '#009387',
               borderWidth: 2,
               borderColor: 'white',
               borderRadius: 30,
@@ -51,7 +51,7 @@ const SearchParkingStyles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     paddingVertical: 50,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     flex: 1
   },
 });
