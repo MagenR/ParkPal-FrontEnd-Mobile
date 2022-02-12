@@ -35,6 +35,7 @@ export default function ShowMap() {
           types: "establishment",
           location: `${region.latitude}, ${region.longitude}`
         }}
+        textInputProps={{ placeholderTextColor: '#fff' }}
         styles={searchInputBoxStyles}
       />
       <MapView
@@ -54,20 +55,20 @@ export default function ShowMap() {
 const mapStyles = StyleSheet.create({
   map: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height * 0.6
+    height: Dimensions.get("window").height 
   }
 })
 
 const searchInputBoxStyles = StyleSheet.create({
   container: {
     flex: 0,
-    backgroundColor: '#DDDDDF',
+    backgroundColor: '#34495e',
     paddingBottom: 0
   },
   textInput: {
-    backgroundColor: "#DDDDDF",
+    backgroundColor: "#34495e",
     borderRadius: 0,
-    fontSize: 18
+    fontSize: 18,
   },
   textInputContainer: {
     paddingBottom: 0

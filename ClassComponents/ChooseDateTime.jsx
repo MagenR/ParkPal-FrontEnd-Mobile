@@ -7,7 +7,7 @@ export default function ChooseDateTime() {
 
     const [date, setDate] = useState(new Date());
 
-    const onChange = (event, selectedDate) => {
+    const changeDate = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setDate(currentDate);
     };
@@ -15,30 +15,24 @@ export default function ChooseDateTime() {
     return (
         <View>
             <View style={{ flexDirection: 'row', alignContent: 'space-around' }}>
-                <Icon style={dateTimePickerStyles.icon} size={24} type='font-awesome' name="calendar" />
-                <Text style={dateTimePickerStyles.icon}>Date:</Text>
+                <Icon style={{marginRight: 10}} size={24} type='font-awesome-5' name="sign-in-alt" />
+                <Text style={dateTimePickerStyles.header}>Entrance:</Text>
                 <DateTimePicker
-                    style={dateTimePickerStyles.timePicker}
+                    style={dateTimePickerStyles.entranceDateTime}
                     value={date}
-                    onChange={onChange}
+                    mode='datetime'
+                    onChange={changeDate}
                 >
                 </DateTimePicker>
             </View>
-            <View style={{ flexDirection: 'row', alignContent: 'space-around' }}>
-                <Icon style={dateTimePickerStyles.icon} size={24} type='font-awesome-5' name="clock" />
-                <Text style={dateTimePickerStyles.icon}>Time:</Text>
+            <View style={{ flexDirection: 'row', alignContent: 'space-around', paddingTop:20 }}>
+                <Icon style={{marginRight: 10}} size={24} type='font-awesome-5' name="sign-out-alt" />
+                <Text style={dateTimePickerStyles.header}>Exit:</Text>
                 <DateTimePicker
-                    style={dateTimePickerStyles.timePicker}
+                    style={dateTimePickerStyles.exitDateTime}
                     value={date}
-                    mode='time'
-                    onChange={onChange}
-                >
-                </DateTimePicker>
-                <DateTimePicker
-                    style={dateTimePickerStyles.timePicker}
-                    value={date}
-                    mode='time'
-                    onChange={onChange}
+                    mode='datetime'
+                    onChange={changeDate}
                 >
                 </DateTimePicker>
             </View>
@@ -47,12 +41,17 @@ export default function ChooseDateTime() {
 }
 
 const dateTimePickerStyles = StyleSheet.create({
-    icon: {
-        padding: 10,
+    header: {
+        marginRight: 10,
+        padding: 1,
+        fontSize: 20
     },
-    timePicker: {
-        padding: 20,
+    entranceDateTime: {
         alignSelf: 'center',
-        width: 100,
-    }
+        width: 200,
+    },
+    exitDateTime: {
+        alignSelf: 'center',
+        width: 245,
+    },
 });

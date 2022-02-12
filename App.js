@@ -1,6 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import searchParking from './Pages/searchParking';
+import searchParkingPage from './Pages/searchParkingPage';
+import PaymentPage from './Pages/PaymentPage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -8,18 +7,11 @@ export default function App() {
   const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="SearchParking">
-      <Stack.Screen name="SearchParking" component={searchParking} options={{ title: 'Search for Parking' }}/>
+      <Stack.Navigator initialRouteName="searchParkingPage">
+        <Stack.Screen name="searchParkingPage" component={searchParkingPage} options={{ title: 'Search for Parking' }} />
+        <Stack.Screen name="PaymentPage" component={PaymentPage} options={{ headerShown: false }} />
       </Stack.Navigator>
-  </NavigationContainer>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
