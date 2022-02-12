@@ -20,7 +20,7 @@ export default function HomePage({ navigation }) {
                 <ScrollView>
                     <View style={styles.button}>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('LogInPage')}
+                            onPress={() => navigation.navigate('logIn')}
                             style={[styles.signUp, {
                                 borderColor: '#009387',
                                 backgroundColor: '#fff',
@@ -34,7 +34,7 @@ export default function HomePage({ navigation }) {
                     </View>
                     <View style={styles.button}>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('SignUpPage')}
+                            onPress={() => navigation.navigate('SignUp')}
                             style={[styles.signUp, {
                                 borderColor: '#009387',
                                 backgroundColor: '#fff',

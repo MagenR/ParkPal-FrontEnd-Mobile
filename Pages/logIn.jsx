@@ -139,7 +139,7 @@ export default function logIn({ navigation }) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
+                    onPress={() => navigation.navigate('SignUp')}
                     style={[styles.signIn, {
                         borderColor: '#009387',
                         borderWidth: 1,
