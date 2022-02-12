@@ -11,6 +11,12 @@ export default function HomePage({ navigation }) {
 
     return (
         <View style={styles.container}>
+            <Image
+                source={require('./images/logo-removebg.png')}
+                style={styles.logo}
+                resizeMode="contain"
+            >
+            </Image>
             <Text style={styles.text}>Park Pal</Text>
 
             <Animatable.View
