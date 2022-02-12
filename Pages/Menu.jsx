@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native";
 
 export default function Menu({ navigation }) {
     return (
@@ -8,21 +8,21 @@ export default function Menu({ navigation }) {
                 <Button styles={styles.BtnStyle}
                     title="Search parking lot"
                     color='#f194ff'
-                    onPress={() => navigation.navigate()}
+                    onPress={() => navigation.navigate('searchParking')}
                 />
             </View>
             <View style={styles.buttonStyle}>
                 <Button styles={styles.BtnStyle}
-                    title="Sign up"
+                    title="Parking board"
                     color='#f194ff'
-                    onPress={() => navigation.navigate()}
+                    // onPress={() => navigation.navigate()}
                 />
             </View>
             <View style={styles.buttonStyle}>
                 <Button styles={styles.BtnStyle}
-                    title="Sign up"
+                    title="Parking history"
                     color='#f194ff'
-                    onPress={() => navigation.navigate()}
+                    // onPress={() => navigation.navigate()}
                 />
             </View>
         </View>
