@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Text, TouchableHighlight } from "react-native"
-import ChooseDateTime from "../ClassComponents/ChooseDateTime";
-import ShowMap from "../ClassComponents/ShowMap";
+import  ChooseDateTime  from "../ClassComponents/ChooseDateTime";
+import  ShowMap  from "../ClassComponents/ShowMap";
 import { Button } from 'react-native-elements';
 
 export default function SearchParkingPage({navigation}) {

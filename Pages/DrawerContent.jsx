@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Drawer, Avatar, Title, Caption } from 'react-native-paper';
+import { Drawer, Title, Caption } from 'react-native-paper';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import Icon from 'react-native-elements';
 
-export function DrawerContent(props) {
+export default function DrawerContent(props) {
 
     return (
         <View style={{ flex: 1 }}>
@@ -20,7 +19,7 @@ export function DrawerContent(props) {
                 <Drawer.Section style={styles.drawerSection}>
                     <DrawerItem
                         label="Home"
-                        onPress={() => { props.navigation.navigate('searchParkingPage') }}
+                        onPress={() => { props.navigation.navigate('HomePage') }}
                     />
                 </Drawer.Section>
                 <Drawer.Section style={styles.drawerSection}>
