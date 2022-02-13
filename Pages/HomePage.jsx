@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, Button, StyleSheet, StatusBar, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
+import { Icon } from 'react-native-elements';
+
 
 export default function HomePage({ navigation }) {
 
@@ -12,13 +14,13 @@ export default function HomePage({ navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.centerImage}>
-            <Image
-                source={require('./images/logo-removebg.png')}
-                style={styles.logo}
-                resizeMode="contain"
-            >
-            </Image>
-            <Text style={styles.text}>Park Pal</Text>
+                <Image
+                    source={require('./images/logo-removebg.png')}
+                    style={styles.logo}
+                    resizeMode="contain"
+                >
+                </Image>
+                <Text style={styles.text}>Park Pal</Text>
             </View>
             <Animatable.View
                 animation="fadeInUpBig"
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#009387',
     },
-    centerImage :{
+    centerImage: {
         justifyContent: 'center',
         alignItems: 'center',
     },

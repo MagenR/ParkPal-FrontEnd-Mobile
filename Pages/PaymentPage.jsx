@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
+import * as Animatable from 'react-native-animatable';
 
 export default function PaymentPage({ navigation, route }) {
     const [payment, setPayment] = useState({ cardNumber: '', expiration: '', cvv: '', id: '' })
@@ -20,11 +21,14 @@ export default function PaymentPage({ navigation, route }) {
                 <Text style={paymentStyles.text}>Entry Time:</Text>
                 <Text style={paymentStyles.text}>Exit Time:</Text>
             </View>
-            <View style={paymentStyles.footer}>
+            <Animatable.View
+                animation="fadeInUpBig"
+                style={[paymentStyles.footer]}
+            >
                 <Input
                     label='Card Number'
                     placeholder='****  ****  ****  ****'
-                    placeholderTextColor= '#cdd0d2'
+                    placeholderTextColor='#cdd0d2'
                     rightIcon={
                         <Icon
                             name='cc-visa'
@@ -38,33 +42,33 @@ export default function PaymentPage({ navigation, route }) {
                 <Input
                     label='Expiration'
                     placeholder='00/00'
-                    placeholderTextColor= '#cdd0d2'
+                    placeholderTextColor='#cdd0d2'
                     onChangeText={e => updatePayment('expiration', e)}
                 />
                 <Input
                     label='CVV'
                     placeholder='***'
-                    placeholderTextColor= '#cdd0d2'
+                    placeholderTextColor='#cdd0d2'
                     onChangeText={e => updatePayment('cvv', e)}
                 />
                 <Input
                     label='ID'
                     placeholder="*********"
-                    placeholderTextColor= '#cdd0d2'
+                    placeholderTextColor='#cdd0d2'
                     onChangeText={e => updatePayment('id', e)}
                 />
                 <TouchableHighlight>
-                <Button
-                    title="Purchase"
-                    buttonStyle={{
-                        backgroundColor: '#009387',
-                        borderWidth: 2,
-                        borderColor: 'white',
-                        borderRadius: 30,
-                    }}
-                />
+                    <Button
+                        title="Purchase"
+                        buttonStyle={{
+                            backgroundColor: '#009387',
+                            borderWidth: 2,
+                            borderColor: 'white',
+                            borderRadius: 30,
+                        }}
+                    />
                 </TouchableHighlight>
-            </View>
+            </Animatable.View>
         </View>
     );
 };
@@ -88,10 +92,10 @@ const paymentStyles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#fff',
         padding: 15
-        
+
     },
     textContainer: {
-        flex:2,
+        flex: 2,
         paddingVertical: 80,
         paddingHorizontal: 30,
     },

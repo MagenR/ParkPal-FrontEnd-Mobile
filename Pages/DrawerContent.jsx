@@ -18,8 +18,8 @@ export default function DrawerContent(props) {
                 </View>
                 <Drawer.Section style={styles.drawerSection}>
                     <DrawerItem
-                        label="Home"
-                        onPress={() => { props.navigation.navigate('HomePage') }}
+                        label="Profile"
+                        onPress={() => { props.navigation.navigate('ProfilePage') }}
                     />
                 </Drawer.Section>
                 <Drawer.Section style={styles.drawerSection}>
