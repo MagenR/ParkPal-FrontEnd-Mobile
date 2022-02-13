@@ -4,7 +4,7 @@ import HomePage from './Pages/HomePage';
 import SignUp from './Pages/SignUp';
 import logIn from './Pages/logIn';
 import DrawerNavigation from './ClassComponents/DrawerNavigator';
-
+import PaymentPage from './Pages/PaymentPage';
 
 const Stack = createNativeStackNavigator(); 
 
@@ -16,6 +16,7 @@ export default function App() {
       <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}/>
       <Stack.Screen name="logIn" component={logIn} options={{ headerShown: false }}/>
       <Stack.Screen name="DrawerNavigation" component={DrawerNavigation} options={{ headerShown: false }}/>
+      <Stack.Screen name="PaymentPage" component={PaymentPage} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

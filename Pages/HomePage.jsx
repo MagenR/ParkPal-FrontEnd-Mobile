@@ -11,6 +11,7 @@ export default function HomePage({ navigation }) {
 
     return (
         <View style={styles.container}>
+            <View style={styles.centerImage}>
             <Image
                 source={require('./images/logo-removebg.png')}
                 style={styles.logo}
@@ -18,12 +19,12 @@ export default function HomePage({ navigation }) {
             >
             </Image>
             <Text style={styles.text}>Park Pal</Text>
-
+            </View>
             <Animatable.View
                 animation="fadeInUpBig"
                 style={styles.footer}
             >
-                <ScrollView>
+                <ScrollView >
                     <View style={styles.button}>
                         <TouchableOpacity
                             onPress={() => navigation.navigate('logIn')}
@@ -63,6 +64,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#009387',
+    },
+    centerImage :{
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    signUp: {
+        width: '100%',
+        height: 50,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -79,8 +88,6 @@ const styles = StyleSheet.create({
         height: 400,
         marginLeft: 15,
         marginTop: 10,
-
-
     },
 
     button: {
@@ -102,7 +109,8 @@ const styles = StyleSheet.create({
     },
     text_footer: {
         color: '#05375a',
-        fontSize: 18
+        fontSize: 40,
+        fontWeight: 'bold'
     },
 
 });

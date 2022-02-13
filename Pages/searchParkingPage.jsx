@@ -11,11 +11,11 @@ export default function SearchParkingPage({navigation}) {
         <ShowMap />
       </View>
       <View style={SearchParkingStyles.footer}>
-        <Text style={SearchParkingStyles.text_header}>Choose the date and the time</Text>
+        <Text style={SearchParkingStyles.text_header}>Choose a date and a time</Text>
         <ChooseDateTime />
         <TouchableHighlight>
           <Button
-            title="Save the parking"
+            title="Reserve a parking"
             onPress={()=> navigation.navigate('PaymentPage')}
             buttonStyle={{
               backgroundColor: '#009387',
