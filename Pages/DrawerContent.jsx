@@ -31,7 +31,7 @@ export default function DrawerContent(props) {
                 <Drawer.Section style={styles.drawerSection}>
                     <DrawerItem
                         label="Purchase history"
-                        onPress={() => { props.navigation.navigate('searchParkingPage') }}
+                        onPress={() => { props.navigation.navigate('History') }}
                     />
                 </Drawer.Section>
             </DrawerContentScrollView >

@@ -57,7 +57,7 @@ export default function logIn({ navigation }) {
                     size={20}
                 />
                 <TextInput 
-                    placeholder="Your email or Username"
+                    placeholder="Your email/Username"
                     placeholderTextColor="#666666"
                     style={[styles.textInput, {
                         color: colors.text
