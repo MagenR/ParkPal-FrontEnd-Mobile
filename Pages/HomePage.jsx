@@ -2,8 +2,6 @@ import React from 'react';
 import { View, Text, Button, StyleSheet, StatusBar, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
-import { Icon } from 'react-native-elements';
-
 
 export default function HomePage({ navigation }) {
 

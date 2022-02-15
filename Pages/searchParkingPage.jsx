@@ -13,11 +13,17 @@ export default function SearchParkingPage({ navigation }) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [mapRegion, setMapRegion] = useState(null);
-  const [date, setDate] = useState(new Date());
+  const [entranceDate, setEntranceDate] = useState(new Date());
+  const [exitDate, setExitDate] = useState(new Date());
 
-  const changeDate = (event, selectedDate) => {
+  const changeEntraceDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setDate(currentDate);
+    setEntranceDate(currentDate);
+  };
+
+  const changeExitDate = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setExitDate(currentDate);
   };
 
 
@@ -54,8 +60,12 @@ export default function SearchParkingPage({ navigation }) {
 
   return (
     <View style={SearchParkingStyles.container}>
-      <View style={SearchParkingStyles.header}>
-        <View >
+        <View style={{marginTop: 50, alignItems: 'flex-start', paddingLeft: 10, paddingBottom: 5}}>
+        <TouchableHighlight onPress={() => navigation.openDrawer()}>
+          <Icon type='font-awesome-5' name="bars" color="#777777" size={20} />
+        </TouchableHighlight>
+        </View>
+        <View>
           <GooglePlacesAutocomplete
             placeholder="Search for Location"
             fetchDetails={true}
@@ -108,7 +118,6 @@ export default function SearchParkingPage({ navigation }) {
             ></Circle>
           </MapView>
         </View>
-      </View>
       <View style={SearchParkingStyles.footer}>
         <Text style={SearchParkingStyles.text_header}>Choose a date and a time</Text>
         <View>
@@ -117,9 +126,9 @@ export default function SearchParkingPage({ navigation }) {
             <Text style={dateTimePickerStyles.header}>Entrance:</Text>
             <DateTimePicker
               style={dateTimePickerStyles.entranceDateTime}
-              value={date}
+              value={entranceDate}
               mode='datetime'
-              onChange={changeDate}
+              onChange={changeEntraceDate}
             >
             </DateTimePicker>
           </View>
@@ -128,9 +137,9 @@ export default function SearchParkingPage({ navigation }) {
             <Text style={dateTimePickerStyles.header}>Exit:</Text>
             <DateTimePicker
               style={dateTimePickerStyles.exitDateTime}
-              value={date}
+              value={exitDate}
               mode='datetime'
-              onChange={changeDate}
+              onChange={changeExitDate}
             >
             </DateTimePicker>
           </View>
@@ -157,9 +166,6 @@ const SearchParkingStyles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    flex: 2,
-  },
   footer: {
     flex: 0,
     paddingTop: 0,
@@ -185,12 +191,11 @@ const mapStyles = StyleSheet.create({
   },
 })
 
-
 const searchInputBoxStyles = StyleSheet.create({
   container: {
     flex: 0,
     backgroundColor: '#fff',
-    paddingTop: 60,
+    paddingTop: 5,
   },
   textInput: {
     backgroundColor: "#fff",
