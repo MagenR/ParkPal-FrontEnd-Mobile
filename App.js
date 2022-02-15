@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomePage from './Pages/HomePage';
 import SignUp from './Pages/SignUp';
 import LogIn from './Pages/LogIn';
-import SearchParkingPage from './Pages/searchParkingPage';
+import SearchParkingPage from './Pages/SearchParkingPage';
 import ProfilePage from './Pages/ProfilePage';
 import EditProfilePage from './Pages/EditProfilePage';
 import DrawerNavigation from './ClassComponents/DrawerNavigator';
