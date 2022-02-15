@@ -4,35 +4,57 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import React, { useState, useEffect } from 'react';
 
+const apiUrl= 'api/getPastReservations'
+
 export default function History({ navigation , route}) {
 
-    const [dataSet, setData] = React.useState({
-        date:'',
-        location:'',
-        entryTime:'',
-        exitTime:'',
-        price:'',
-        purchases:[],
-        index:0
-    });
+    // const [dataSet, setData] = React.useState({
+    //     date:'',
+    //     location:'',
+    //     entryTime:'',
+    //     exitTime:'',
+    //     price:'',
+    //     purchases:[],
+    //     index:0
+    // });
 
-    useEffect(() => {
-        console.log(dataSet);
-        if (route.params != undefined) {
-            var purchase = {
-                title : route.params.date,
-                location : route.params.location ,
-                entryTime: route.params.entryTime,
-                exitTime: route.params.exitTime,
-                price: route.params.price,
-                key : dataSet.index
-            }
-            setData( prevData => ({
-                notes: [...prevData.purchases, purchase],
-                index: ++prevData.index}))   
-        }
+    // useEffect(() => {
+    //     console.log(dataSet);
+    //     if (route.params != undefined) {
+    //         var purchase = {
+    //             title : route.params.date,
+    //             location : route.params.location ,
+    //             entryTime: route.params.entryTime,
+    //             exitTime: route.params.exitTime,
+    //             price: route.params.price,
+    //             key : dataSet.index
+    //         }
+    //         setData( prevData => ({
+    //             notes: [...prevData.purchases, purchase],
+    //             index: ++prevData.index}))   
+    //     }
    
-    }, [route]);
+    // }, [route]);
+  
+    fetch(apiUrl+'/'+user_id, {
+        method: 'GET',
+        headers: new Headers({
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json; charset=UTF-8'
+        })
+      })
+        .then(res => {
+            console.log('res=', res);
+            return res.json();
+        })
+        .then(
+          (result) => {
+            console.log("History : ", result);          
+          },
+          (error) => {
+            console.error("GET Error: ", error);
+          });
+        
 
     return (
         <View style={styles.container}>
@@ -46,12 +68,12 @@ export default function History({ navigation , route}) {
             >
             <ScrollView>
             <FlatList
-                data={dataSet.notes}
-                keyExtractor={item => item.index}
-                renderItem={({ item }) => (
+                renderItem={({ result }) => (
                     <View style={styles.row}>
-                        <Text>{item.title}</Text>
-                        <Text>{item.location}</Text>
+                        <Text>{result.ReservedAt.name}</Text>
+                        <Text>{result.ReservedAt.address}</Text>
+                        <Text>{result.StartTime}</Text>
+                        <Text>{result.EndTime}</Text>
                     </View>)} />
                 </ScrollView>
             </Animatable.View>
