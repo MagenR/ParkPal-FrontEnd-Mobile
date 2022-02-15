@@ -16,19 +16,21 @@ export default function SignUp({ navigation }) {
         check_textInputChange: false,
         secureTextEntry: true,
         confirm_secureTextEntry: true,
+        isValidPassword: true,
     });
+
     const textInputChange = (val) => {
         if (val.length !== 0) {
             setData({
                 ...data,
                 username: val,
-                check_textInputChange: true
+                check_textInputChange: true,
             });
         } else {
             setData({
                 ...data,
                 username: val,
-                check_textInputChange: false
+                check_textInputChange: false,
             });
         }
     }
@@ -37,16 +39,17 @@ export default function SignUp({ navigation }) {
             setData({
                 ...data,
                 firstName: val,
-                check_firstNameInputChange: true
+                check_firstNameInputChange: true,
             });
         } else {
             setData({
                 ...data,
                 firstName: val,
-                check_firstNameInputChange: false
+                check_firstNameInputChange: false,
             });
         }
     }
+
     const lastNameInputChange = (val) => {
         if (val.length !== 0) {
             setData({
@@ -62,6 +65,7 @@ export default function SignUp({ navigation }) {
             });
         }
     }
+
     const emailInputChange = (val) => {
         if (val.length !== 0) {
             setData({
@@ -77,11 +81,21 @@ export default function SignUp({ navigation }) {
             });
         }
     }
+
     const handlePasswordChange = (val) => {
-        setData({
-            ...data,
-            password: val
-        });
+        if (val.length >= 8) {
+            setData({
+                ...data,
+                password: val,
+                isValidPassword: true
+            });
+        } else {
+            setData({
+                ...data,
+                password: val,
+                isValidPassword: false
+            });
+        }
     }
 
     const handleConfirmPasswordChange = (val) => {
@@ -128,7 +142,7 @@ export default function SignUp({ navigation }) {
                             style={styles.textInput}
                             autoCapitalize="none"
                             onChangeText={(val) => textInputChange(val)}
-
+  
                         />
                         {data.check_textInputChange ?
                             <Animatable.View
@@ -258,6 +272,11 @@ export default function SignUp({ navigation }) {
                             }
                         </TouchableOpacity>
                     </View>
+                    {data.isValidPassword ? null :
+                    <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
+                    </Animatable.View>
+                }
 
                     <Text style={[styles.text_footer, {
                         
@@ -374,5 +393,8 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f2f2f2',
         paddingBottom: 5
     },
-
+    errorMsg: {
+        color: '#FF0000',
+        fontSize: 14,
+    },
 });

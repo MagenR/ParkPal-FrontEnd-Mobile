@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Button, StyleSheet, StatusBar, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
+import Icon from 'react-native-elements'
 
 export default function HomePage({ navigation }) {
 
@@ -13,7 +14,7 @@ export default function HomePage({ navigation }) {
         <View style={styles.container}>
             <View style={styles.centerImage}>
                 <Image
-                    source={require('./images/logo-removebg.png')}
+                    source={require('./images/signage.png')}
                     style={styles.logo}
                     resizeMode="contain"
                 >
@@ -31,7 +32,7 @@ export default function HomePage({ navigation }) {
                             style={[styles.signUp, {
                                 borderColor: '#009387',
                                 backgroundColor: '#fff',
-                                borderWidth: 1,
+                                borderWidth: 2,
                             }]}
                         >
                             <Text style={[styles.text_footer, {
@@ -45,7 +46,7 @@ export default function HomePage({ navigation }) {
                             style={[styles.signUp, {
                                 borderColor: '#009387',
                                 backgroundColor: '#fff',
-                                borderWidth: 1,
+                                borderWidth: 2,
                             }]}
                         >
                             <Text style={[styles.text_footer, {
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 10
     },
     text: {
         color: '#fff',
@@ -82,14 +84,13 @@ const styles = StyleSheet.create({
         marginTop: -80,
 
     },
-
     logo: {
-        width: 300,
-        height: 400,
+        width: 200,
+        height: 300,
         marginLeft: 15,
-        marginTop: 10,
+        marginTop: 50,
+        marginBottom: 20
     },
-
     button: {
         alignItems: 'center',
         marginTop: 50,
@@ -97,7 +98,6 @@ const styles = StyleSheet.create({
     buttonStyle: {
         width: '100%',
         height: 50,
-
     },
     footer: {
         flex: Platform.OS === 'ios' ? 3 : 5,
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 100,
-
     },
     text_footer: {
         color: '#05375a',

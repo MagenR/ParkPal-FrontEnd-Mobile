@@ -6,6 +6,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { Button } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Icon } from 'react-native-elements';
+import * as Animatable from 'react-native-animatable';
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo'
 
@@ -118,7 +119,10 @@ export default function SearchParkingPage({ navigation }) {
             ></Circle>
           </MapView>
         </View>
-      <View style={SearchParkingStyles.footer}>
+        <Animatable.View
+                animation="fadeInUpBig"
+                style={[SearchParkingStyles.footer]}
+            >
         <Text style={SearchParkingStyles.text_header}>Choose a date and a time</Text>
         <View>
           <View style={{ flexDirection: 'row', alignContent: 'space-around' }}>
@@ -157,8 +161,8 @@ export default function SearchParkingPage({ navigation }) {
             />
           </TouchableHighlight>
         </View>
+        </Animatable.View>
       </View>
-    </View>
   )
 }
 

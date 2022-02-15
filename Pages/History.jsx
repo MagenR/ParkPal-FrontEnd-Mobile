@@ -58,7 +58,6 @@ export default function SignUp({ navigation , route}) {
                     </View>)} />
                 </ScrollView>
             </Animatable.View>
-
         </View>
 
     );
