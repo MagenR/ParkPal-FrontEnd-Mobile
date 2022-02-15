@@ -25,7 +25,7 @@ export default function DrawerContent(props) {
                 <Drawer.Section style={styles.drawerSection}>
                     <DrawerItem
                         label="Search for Parking"
-                        onPress={() => { props.navigation.navigate('searchParkingPage') }}
+                        onPress={() => { props.navigation.navigate('SearchParkingPage') }}
                     />
                 </Drawer.Section>
                 <Drawer.Section style={styles.drawerSection}>

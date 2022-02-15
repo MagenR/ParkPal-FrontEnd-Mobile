@@ -316,7 +316,7 @@ export default function SignUp({ navigation }) {
                     <View style={styles.button}>
 
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('logIn')}
+                            onPress={() => navigation.navigate('LogIn')}
                             style={[styles.signUp, {
                                 borderColor: '#009387',
                                 borderWidth: 1,

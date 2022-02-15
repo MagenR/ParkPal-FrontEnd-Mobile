@@ -58,7 +58,7 @@ export default function ProfilePage({ navigation }) {
                 </View>
             </View>
             <View style={styles.menuWrapper}>
-                <TouchableRipple onPress={() => navigation.navigate('searchParkingPage')}>
+                <TouchableRipple onPress={() => navigation.navigate('SearchParkingPage')}>
                     <View style={styles.menuItem}>
                         <Icon type='font-awesome-5' name="search-location" color="black" size={25} />
                         <Text style={styles.menuItemText}>Search Parking</Text>

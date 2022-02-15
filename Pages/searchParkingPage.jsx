@@ -18,12 +18,12 @@ export default function SearchParkingPage({ navigation }) {
   const [exitDate, setExitDate] = useState(new Date());
 
   const changeEntraceDate = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate || entranceDate;
     setEntranceDate(currentDate);
   };
 
   const changeExitDate = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate || exitDate;
     setExitDate(currentDate);
   };
 

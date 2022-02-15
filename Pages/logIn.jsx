@@ -6,7 +6,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 import { ALERT_TYPE, Dialog, Root, Toast } from 'react-native-alert-notification';
 
-export default function logIn({ navigation }) {
+export default function LogIn({ navigation }) {
 
     const { colors } = useTheme();
 
