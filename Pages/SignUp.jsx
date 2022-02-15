@@ -4,6 +4,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import React, { useState, useEffect } from 'react';
 
+const emailValidationApi = 'api/ValidateEmail';
+const UsernameValidationApi = 'api/ValidateUsername';
+
 export default function SignUp({ navigation }) {
 
     const [data, setData] = React.useState({
@@ -34,6 +37,7 @@ export default function SignUp({ navigation }) {
             });
         }
     }
+
     const firstNameInputChange = (val) => {
         if (val.length !== 0) {
             setData({
@@ -119,6 +123,36 @@ export default function SignUp({ navigation }) {
         });
     }
 
+    const validateLogin = (login, apiUrl) => {
+        fetch(apiUrl, {
+            method: 'POST',
+            body: login,
+            headers: new Headers({
+              'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+            })
+          })
+            .then(res => {
+              console.log('res=', res);
+              return res.json();
+            })
+            .then(
+              (result) => {
+                console.log("fetch POST= ", result);
+              },
+              (error) => {
+                console.log("err post=", error);
+              });
+    }
+
+    const valdiateEmail = (email) => {
+        validateLogin(email, emailValidationApi);
+    }
+
+    const valdiateUsername = (username) => {
+        validateLogin(username, UsernameValidationApi);
+    }
+
+
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor='#009387' barStyle="light-content" />
@@ -142,7 +176,7 @@ export default function SignUp({ navigation }) {
                             style={styles.textInput}
                             autoCapitalize="none"
                             onChangeText={(val) => textInputChange(val)}
-  
+                            onEndEditing={(e) => valdiateUsername(e.nativeEvent.text)}
                         />
                         {data.check_textInputChange ?
                             <Animatable.View
@@ -223,7 +257,7 @@ export default function SignUp({ navigation }) {
                             style={styles.textInput}
                             autoCapitalize="none"
                             onChangeText={(val) => emailInputChange(val)}
-
+                            onEndEditing={(e) => valdiateEmail(e.nativeEvent.text)}
                         />
                         {data.check_emailInputChange ?
                             <Animatable.View
