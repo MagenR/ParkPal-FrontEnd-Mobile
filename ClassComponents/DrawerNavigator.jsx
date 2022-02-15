@@ -5,6 +5,7 @@ import SearchParkingPage from '../Pages/searchParkingPage';
 import ProfilePage from '../Pages/ProfilePage';
 import EditProfilePage from '../Pages/EditProfilePage';
 import PaymentPage from '../Pages/PaymentPage';
+import History from '../Pages/History'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import DrawerContent from '../Pages/DrawerContent'
 
@@ -20,6 +21,7 @@ export default function DrawerNavigator() {
         <Drawer.Screen name="logIn" component={logIn} options={{ headerShown: false }}/>
         <Drawer.Screen name="PaymentPage" component={PaymentPage} options={{ headerShown: false }}/>
         <Drawer.Screen name="EditProfilePage" component={EditProfilePage} options={{ headerShown: false }}/>
+        <Drawer.Screen name="History" component={History} options={{ headerShown: false }}/>
       </Drawer.Navigator>
   );
 }
