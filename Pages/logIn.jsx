@@ -3,16 +3,17 @@ import { TextInput, View, StyleSheet, Platform, StatusBar, Text, TouchableOpacit
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-elements';
 import { useTheme } from 'react-native-paper';
-import { ALERT_TYPE, Dialog, Root, Toast } from 'react-native-alert-notification';
+
+const apiUrl = 'api/login'
 
 export default function LogIn({ navigation }) {
 
     const { colors } = useTheme();
 
     const [data, setData] = React.useState({
-        username: '',
-        email: '',
+        usernameORemail: '',
         password: '',
         check_textInputChange: false,
         secureTextEntry: true,
@@ -24,14 +25,14 @@ export default function LogIn({ navigation }) {
         if (val.length !== 0) {
             setData({
                 ...data,
-                username: val,
+                usernameORemail: val,
                 check_textInputChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                username: val,
+                usernameORemail: val,
                 check_textInputChange: false,
                 isValidUser: false
             });
@@ -75,25 +76,32 @@ export default function LogIn({ navigation }) {
         }
     }
 
-    const loginHandle = (userName, password) => {
-
-        const foundUser = Users.filter(item => {
-            return userName == item.username && password == item.password;
-        });
-
-        if (data.username.length == 0 || data.password.length == 0) {
-            Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
-                { text: 'Okay' }
-            ]);
-            return;
-        }
-
-        if (foundUser.length == 0) {
-            Alert.alert('Invalid User!', 'Username or password is incorrect.', [
-                { text: 'Okay' }
-            ]);
-            return;
-        }
+    const loginHandle = (login, password) => {
+        fetch(apiUrl, {
+            method: 'POST',
+            body: JSON.stringify(login, password),
+            headers: new Headers({
+              'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+            })
+          })
+            .then(res => {
+              console.log('res=', res);
+              return res.json();
+            })
+            .then(
+              (result) => {
+                console.log("fetch POST= ", result);
+                navigation.navigate('ProfilePage', result)
+              },
+              (error) => {
+                console.log("err post=", error);
+                return(
+                    <View style={{flexDirection: 'row'}}>
+                        <Icon size={20} type='font-awesome-5' name="exclamation-circle" color='red' />
+                        <Text>Oops, that's not a match</Text>
+                    </View>
+                )
+              });
     }
 
     return (
@@ -190,8 +198,7 @@ export default function LogIn({ navigation }) {
                 <View style={styles.button}>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('ProfilePage')}
-                        // onPress={() => {loginHandle( data.username, data.password )}}
+                        onPress={() => {loginHandle( data.usernameORemail, data.password )}}
                         style={[styles.signIn, {
                             borderColor: '#009387',
                             borderWidth: 1,

@@ -81,7 +81,7 @@ export default function EditProfilePage({navigation}) {
           ]}
         />
       </View>
-      <View style={styles.action}>
+      {/* <View style={styles.action}>
         <Feather name="phone" color={colors.text} size={20} />
         <TextInput
           placeholder="Phone"
@@ -95,7 +95,7 @@ export default function EditProfilePage({navigation}) {
             },
           ]}
         />
-      </View>
+      </View> */}
       <View style={styles.action}>
         <FontAwesome name="envelope-o" color={colors.text} size={20} />
         <TextInput
@@ -111,7 +111,7 @@ export default function EditProfilePage({navigation}) {
           ]}
         />
       </View>
-      <View style={styles.action}>
+      {/* <View style={styles.action}>
         <FontAwesome name="globe" color={colors.text} size={20} />
         <TextInput
           placeholder="Country"
@@ -138,7 +138,7 @@ export default function EditProfilePage({navigation}) {
             },
           ]}
         />
-      </View>
+      </View> */}
       <TouchableOpacity style={styles.commandButton} onPress={() => { }}>
         <Text style={styles.panelButtonTitle}>Submit</Text>
       </TouchableOpacity>

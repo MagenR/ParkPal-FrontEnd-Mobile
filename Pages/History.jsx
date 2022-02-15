@@ -4,7 +4,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import React, { useState, useEffect } from 'react';
 
-export default function SignUp({ navigation , route}) {
+export default function History({ navigation , route}) {
 
     const [dataSet, setData] = React.useState({
         date:'',
@@ -52,9 +52,6 @@ export default function SignUp({ navigation , route}) {
                     <View style={styles.row}>
                         <Text>{item.title}</Text>
                         <Text>{item.location}</Text>
-                        <TouchableHighlight onPress={() => deleteNoteFromList(item.key)}>
-                            <AntDesign name="delete" size={24} color="black" />
-                        </TouchableHighlight>
                     </View>)} />
                 </ScrollView>
             </Animatable.View>

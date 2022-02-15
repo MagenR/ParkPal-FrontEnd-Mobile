@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, } from 'react-native';
 import { Avatar, Title, Caption, TouchableRipple } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
 
-export default function ProfilePage({ navigation }) {
+export default function ProfilePage({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ flexDirection: 'row' }}>
@@ -26,22 +26,22 @@ export default function ProfilePage({ navigation }) {
                     <Title style={[styles.title, {
                         marginTop: 15,
                         marginBottom: 5,
-                    }]}>John Doe</Title>
-                    <Caption style={styles.caption}>@j_doe</Caption>
+                    }]}>{route.FirstName} {route.LastName}</Title>
+                    <Caption style={styles.caption}>@{route.UserName}</Caption>
                 </View>
             </View>
             <View style={styles.userInfoSection}>
-                <View style={styles.row}>
+                {/* <View style={styles.row}>
                     <Icon type='font-awesome-5' name="map-marker" color="#777777" size={20} />
                     <Text style={{ color: "#777777", marginLeft: 20 }}>Kolkata, India</Text>
                 </View>
                 <View style={styles.row}>
                     <Icon type='font-awesome-5' name="phone" color="#777777" size={20} />
                     <Text style={{ color: "#777777", marginLeft: 20 }}>+91-900000009</Text>
-                </View>
+                </View>  */}
                 <View style={styles.row}>
                     <Icon type='font-awesome-5' name="envelope" color="#777777" size={20} />
-                    <Text style={{ color: "#777777", marginLeft: 20 }}>john_doe@email.com</Text>
+                    <Text style={{ color: "#777777", marginLeft: 20 }}>{route.Email}</Text>
                 </View>
             </View>
             <View style={styles.infoBoxWrapper}>
@@ -65,10 +65,17 @@ export default function ProfilePage({ navigation }) {
                     </View>
                 </TouchableRipple>
             </View>
+            <View style={styles.menuWrapper}>
+                <TouchableRipple onPress={() => navigation.navigate('History', route.Id)}>
+                    <View style={styles.menuItem}>
+                        <Icon type='font-awesome-5' name="history" color="black" size={25} />
+                        <Text style={styles.menuItemText}>Purchase History</Text>
+                    </View>
+                </TouchableRipple>
+            </View>
         </SafeAreaView>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: {
