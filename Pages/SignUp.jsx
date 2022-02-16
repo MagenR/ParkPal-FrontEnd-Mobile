@@ -10,6 +10,7 @@ const UsernameValidationApi = '/ValdiateUsername';
 const signupApi = 'signup';
 
 export default function SignUp({ navigation }) {
+    
 
     const [data, setData] = React.useState({
         username: '',
@@ -23,6 +24,14 @@ export default function SignUp({ navigation }) {
         confirm_secureTextEntry: true,
         isValidPassword: true,
     });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setRecipe({
+            ...data,
+          [name]: value
+        });
+      };
 
     const textInputChange = (val) => {
         setData({
@@ -154,7 +163,6 @@ export default function SignUp({ navigation }) {
         let response = getUser(username, hostURL + UsernameValidationApi);
     }
 
-
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor='#009387' barStyle="light-content" />
@@ -177,8 +185,8 @@ export default function SignUp({ navigation }) {
                             placeholder="Your Username"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => textInputChange(val)}
-                            onEndEditing={(e) => valdiateUsername(e.nativeEvent.text)}
+                            onChangeText={handleChange}
+                            //onEndEditing={(e) => valdiateUsername(e.nativeEvent.text)}
                         />
                         {data.username_validity ?
                             <Animatable.View
@@ -214,7 +222,7 @@ export default function SignUp({ navigation }) {
                             placeholder="Your first name"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => firstNameInputChange(val)}
+                            onChangeText={handleChange}
 
                         />
                         {data.check_firstNameInputChange ?
@@ -241,7 +249,7 @@ export default function SignUp({ navigation }) {
                             placeholder="Your last name"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => lastNameInputChange(val)}
+                            onChangeText={handleChange}
 
                         />
                         {data.check_lastNameInputChange ?
@@ -268,8 +276,8 @@ export default function SignUp({ navigation }) {
                             placeholder="Your email"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => emailInputChange(val)}
-                            onEndEditing={(e) => valdiateEmail(e.nativeEvent.text)}
+                            onChangeText={handleChange}
+                            //onEndEditing={(e) => valdiateEmail(e.nativeEvent.text)}
                         />
                         {data.check_emailInputChange ?
                             <Animatable.View
@@ -298,7 +306,7 @@ export default function SignUp({ navigation }) {
                             secureTextEntry={data.secureTextEntry ? true : false}
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => handlePasswordChange(val)}
+                            onChangeText={handleChange}
                         />
                         <TouchableOpacity
                             onPress={updateSecureTextEntry}
@@ -338,7 +346,7 @@ export default function SignUp({ navigation }) {
                             secureTextEntry={data.confirm_secureTextEntry ? true : false}
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => handleConfirmPasswordChange(val)}
+                            onChangeText={handleChange}
                         />
                         <TouchableOpacity
                             onPress={updateConfirmSecureTextEntry}
