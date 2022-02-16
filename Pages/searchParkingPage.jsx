@@ -9,6 +9,7 @@ import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo'
+const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/SearchMath';
 
 export default function SearchParkingPage({ navigation }) {
   const [location, setLocation] = useState(null);
@@ -16,6 +17,7 @@ export default function SearchParkingPage({ navigation }) {
   const [mapRegion, setMapRegion] = useState(null);
   const [entranceDate, setEntranceDate] = useState(new Date());
   const [exitDate, setExitDate] = useState(new Date());
+  const [nearestParkingLot, setNearestParkingLot] = useState(null);
 
   const changeEntraceDate = (event, selectedDate) => {
     const currentDate = selectedDate || entranceDate;
@@ -59,6 +61,46 @@ export default function SearchParkingPage({ navigation }) {
     return <Text style={{ margin: 50 }}>Map region doesn't exist.</Text>
   }
 
+  const destination = () => {
+    let destination = {
+      latitude: mapRegion.latitude,
+      longitude: mapRegion.longitude,
+      startTime: entranceDate,
+      endTime: exitDate
+    }
+    getParkingLot(destination)
+  }
+
+  const getParkingLot = (apiUrl, destination) => {
+    console.log("get called! URL: " + apiUrl)
+    fetch(hostURL, {
+        method: 'GET',
+        body: JSON.stringify(destination),
+        headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+        })
+    })
+        .then(res => {
+            //console.log('res=', JSON.stringify(res));
+            console.log('res.status=', JSON.stringify(res.status));
+            console.log('res.ok=', JSON.stringify(res.ok));
+
+            return res.json();
+        })
+        .then(
+            (result) => {
+                console.log("fetch GET= ", JSON.stringify(result));
+                setNearestParkingLot({
+                  result
+              })
+            },
+            (error) => {
+                console.log("err GET=", error);
+            });
+
+            navigation.navigate('PaymentPage', nearestParkingLot);
+  };
+
   return (
     <View style={SearchParkingStyles.container}>
         <View style={{marginTop: 50, alignItems: 'flex-start', paddingLeft: 10, paddingBottom: 5}}>
@@ -73,7 +115,6 @@ export default function SearchParkingPage({ navigation }) {
             nearbyPlacesAPI="GooglePlacesSearch"
             debounce={400}
             onPress={(data, details = null) => {
-              // 'details' is provided when fetchDetails = true
               console.log(data, details)
               setMapRegion({
                 latitude: details.geometry.location.lat,
@@ -150,7 +191,7 @@ export default function SearchParkingPage({ navigation }) {
           <TouchableHighlight>
             <Button
               title="Reserve a parking"
-              onPress={() => navigation.navigate('PaymentPage')}
+              onPress={destination}
               buttonStyle={{
                 backgroundColor: '#009387',
                 borderWidth: 2,

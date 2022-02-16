@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Image, View, Platform } from 'react-native';
+import { View, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Animatable from 'react-native-animatable';
 import {
   Text,
   TouchableOpacity,
-  ImageBackground,
   TextInput,
   StyleSheet,
 } from 'react-native';
 
 import { useTheme, Avatar, TouchableRipple } from 'react-native-paper';
-
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import { RotateInUpLeft } from 'react-native-reanimated';
+
+const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/users/update';
+const emailValidationApi = 'ValidateEmail';
+const UsernameValidationApi = 'ValdiateUsername';
+const signupApi = 'signup';
 
 export default function EditProfilePage({ navigation, route }) {
   const [data, setData] = useState({
@@ -23,87 +24,173 @@ export default function EditProfilePage({ navigation, route }) {
     firstName: '',
     lastName: '',
     email: '',
+    password: '',
+    username_validity: null,
+    email_validity: null,
+    password_validty: null,
+    secureTextEntry: true,
+    readyToPost: false
+
   })
-  const [image, setImage] = useState(null);
+
+  // const [image, setImage] = useState(null);
   const { colors } = useTheme();
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
-  };
-
-  const textInputChange = (val) => {
+  useEffect(() => {
     setData({
       ...data,
-      username: val
+      readyToPost: checkAllFields()
+    });
+  }, [data.firstName, data.lastName, data.username_validity, data.password_validty, data.email_validity]);
+
+  // const pickImage = async () => {
+  //   // No permissions request is necessary for launching the image library
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+
+  //   console.log(result);
+
+  //   if (!result.cancelled) {
+  //     setImage(result.uri);
+  //   }
+  // };
+
+  const textInputChange = (textDat, fieldname) => {
+    setData({
+      ...data,
+      [fieldname]: textDat
     });
   }
 
-  const firstNameInputChange = (val) => {
-    if (val.length !== 0) {
-      setData({
-        ...data,
-        firstName: val,
-        check_firstNameInputChange: true,
-      });
-    } else {
-      setData({
-        ...data,
-        firstName: val,
-        check_firstNameInputChange: false,
-      });
-    }
+  const updateSecureTextEntry = () => {
+    setData({
+      ...data,
+      secureTextEntry: !data.secureTextEntry
+    });
   }
 
-  const lastNameInputChange = (val) => {
-    if (val.length !== 0) {
-      setData({
-        ...data,
-        lastName: val,
-        check_lastNameInputChange: true
-      });
-    } else {
-      setData({
-        ...data,
-        lastName: val,
-        check_lastNameInputChange: false
-      });
-    }
+  const getUser = (apiUrl, validityField) => {
+    console.log("get called! URL: " + apiUrl)
+    fetch(apiUrl, {
+      method: 'GET',
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
+    })
+      .then(res => {
+        //console.log('res=', JSON.stringify(res));
+        console.log('res.status=', JSON.stringify(res.status));
+        console.log('res.ok=', JSON.stringify(res.ok));
+
+        setData({
+          ...data,
+          [validityField]: res.ok
+        })
+
+        return res.json();
+      })
+      .then(
+        (result) => {
+          console.log("fetch GET= ", JSON.stringify(result));
+        },
+        (error) => {
+          console.log("err GET=", error);
+        });
   }
 
-  const emailInputChange = (val) => {
-    if (val.length !== 0) {
-      setData({
-        ...data,
-        email: val,
-        check_emailInputChange: true
-      });
-    } else {
-      setData({
-        ...data,
-        email: val,
-        check_emailInputChange: false
-      });
+  const postUser = (user) => {
+    fetch(hostURL + signupApi, {
+      method: 'POST',
+      body: JSON.stringify(user),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
+    })
+      .then(res => {
+        //console.log('res=', JSON.stringify(res));
+        console.log('res.status=', JSON.stringify(res.status));
+        console.log('res.ok=', JSON.stringify(res.ok));
+        return res.json();
+      })
+      .then(
+        (result) => {
+          console.log("fetch POST=", JSON.stringify(result));
+        },
+        (error) => {
+          console.log("err POST=", error);
+        });
+  }
+
+  const updateUser = () => {
+    let user = {
+      Id: route.Id,
+      UserName: data.username,
+      Email: data.email,
+      Password: data.password,
+      FirstName: data.firstName,
+      lastName: data.lastName
     }
+    postUser(user);
+    navigation.navigate('LogIn');
   }
 
   const valdiateEmail = (email) => {
-    getUser(email, hostURL + emailValidationApi);
+    getUser(hostURL + email + "/" + emailValidationApi, 'email_validity');
   }
 
   const valdiateUsername = (username) => {
-    let response = getUser(username, hostURL + UsernameValidationApi);
+    getUser(hostURL + username + "/" + UsernameValidationApi, 'username_validity');
+  }
+
+  const validatePassword = (password) => {
+    setData({
+      ...data,
+      password_validty: (password.length >= 8) ? true : false
+    });
+  }
+
+  const checkAllFields = () => {
+    if (
+      data.username_validity === true &&
+      data.password_validty === true &&
+      data.email_validity === true &&
+      data.firstName != '' &&
+      data.lastName != '')
+      return true;
+    return false;
+  }
+
+  const renderV = (field) => {
+    console.log(data[field]);
+    if (data[field] === true)
+      return (
+        <Animatable.View
+          animation="bounceIn"
+        >
+          <Feather
+            name="check-circle"
+            color="green"
+            size={20}
+          />
+        </Animatable.View>
+      )
+
+    else if (data[field] === false)
+      return (
+        <Animatable.View
+          animation="bounceIn"
+        >
+          <Feather
+            name="check-circle"
+            color="red"
+            size={20}
+          />
+        </Animatable.View>
+      )
   }
 
   return (
@@ -114,12 +201,12 @@ export default function EditProfilePage({ navigation, route }) {
       </TouchableRipple>
       <View style={{ alignItems: 'center' }}>
         <View style={{ flexDirection: 'row', marginTop: 15, marginLeft: 15 }}>
-          <TouchableRipple onPress={pickImage}>
+          {/* <TouchableRipple onPress={pickImage}>
             <Avatar.Icon style={{ backgroundColor: '#009387' }}
               icon='camera'
               size={80}
             />
-          </TouchableRipple>
+          </TouchableRipple> */}
         </View>
         <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>
           {route.FirstName} {route.LastName}
@@ -137,31 +224,10 @@ export default function EditProfilePage({ navigation, route }) {
                 color: colors.text,
               },
             ]}
-            onChangeText={(val) => textInputChange(val)}
+            onChangeText={(val) => textInputChange(val, 'username')}
             onEndEditing={(e) => valdiateUsername(e.nativeEvent.text)}
           />
-          {data.username_validity ?
-            <Animatable.View
-              animation="bounceIn"
-            >
-              <Feather
-                name="check-circle"
-                color="green"
-                size={20}
-              />
-
-            </Animatable.View>
-            :
-            <Animatable.View
-              animation="bounceIn"
-            >
-              <Feather
-                name="check-circle"
-                color="red"
-                size={20}
-              />
-
-            </Animatable.View>}
+          {renderV('username_validity')}
         </View>
         <View style={styles.action}>
           <FontAwesome name="user-o" color={colors.text} size={20} />
@@ -175,18 +241,11 @@ export default function EditProfilePage({ navigation, route }) {
                 color: colors.text,
               },
             ]}
-            onChangeText={(val) => firstNameInputChange(val)}
+            onChangeText={(val) => textInputChange(val, 'firstName')}
           />
           {data.check_firstNameInputChange ?
-            <Animatable.View
-              animation="bounceIn"
-            >
-              <Feather
-                name="check-circle"
-                color="green"
-                size={20}
-              />
-
+            <Animatable.View animation="bounceIn">
+              <Feather name="check-circle" color="green" size={20} />
             </Animatable.View>
             : null}
         </View>
@@ -202,36 +261,14 @@ export default function EditProfilePage({ navigation, route }) {
                 color: colors.text,
               },
             ]}
-            onChangeText={(val) => lastNameInputChange(val)}
+            onChangeText={(val) => textInputChange(val, 'lastName')}
           />
           {data.check_lastNameInputChange ?
-            <Animatable.View
-              animation="bounceIn"
-            >
-              <Feather
-                name="check-circle"
-                color="green"
-                size={20}
-              />
-
+            <Animatable.View animation="bounceIn">
+              <Feather name="check-circle" color="green" size={20} />
             </Animatable.View>
             : null}
         </View>
-        {/* <View style={styles.action}>
-        <Feather name="phone" color={colors.text} size={20} />
-        <TextInput
-          placeholder="Phone"
-          placeholderTextColor="#666666"
-          keyboardType="number-pad"
-          autoCorrect={false}
-          style={[
-            styles.textInput,
-            {
-              color: colors.text,
-            },
-          ]}
-        />
-      </View> */}
         <View style={styles.action}>
           <FontAwesome name="envelope-o" color={colors.text} size={20} />
           <TextInput
@@ -245,53 +282,51 @@ export default function EditProfilePage({ navigation, route }) {
                 color: colors.text,
               },
             ]}
-            onChangeText={(val) => emailInputChange(val)}
+            onChangeText={(val) => textInputChange(val, 'email')}
             onEndEditing={(e) => valdiateEmail(e.nativeEvent.text)}
           />
-          {data.check_emailInputChange ?
-            <Animatable.View
-              animation="bounceIn"
-            >
-              <Feather
-                name="check-circle"
-                color="green"
-                size={20}
-              />
-
-            </Animatable.View>
-            : null}
+          {renderV('email_validity')}
         </View>
-        {/* <View style={styles.action}>
-        <FontAwesome name="globe" color={colors.text} size={20} />
-        <TextInput
-          placeholder="Country"
-          placeholderTextColor="#666666"
-          autoCorrect={false}
-          style={[
-            styles.textInput,
-            {
-              color: colors.text,
-            },
-          ]}
-        />
-      </View>
-      <View style={styles.action}>
-        <Icon name="map-marker-outline" color={colors.text} size={20} />
-        <TextInput
-          placeholder="City"
-          placeholderTextColor="#666666"
-          autoCorrect={false}
-          style={[
-            styles.textInput,
-            {
-              color: colors.text,
-            },
-          ]}
-        />
-      </View> */}
-        <TouchableOpacity style={styles.commandButton} onPress={() => { }}>
-          <Text style={styles.panelButtonTitle}>Submit</Text>
-        </TouchableOpacity>
+        <View style={styles.action}>
+          <Feather name="lock" color="#05375a" size={20} />
+          <TextInput
+            placeholder="Your Password"
+            secureTextEntry={data.secureTextEntry ? true : false}
+            style={styles.textInput}
+            autoCapitalize="none"
+            onChangeText={text => textInputChange(text, 'password')}
+            onEndEditing={(e) => validatePassword(e.nativeEvent.text)}
+          />
+          <TouchableOpacity onPress={updateSecureTextEntry}>
+            {data.secureTextEntry ?
+              <Feather name="eye-off" color="grey" size={20} />
+              :
+              <Feather name="eye" color="grey" size={20} />
+            }
+          </TouchableOpacity>
+        </View>
+        {(data.password_validty === false) ?
+          <Animatable.View animation="fadeInLeft" duration={500}>
+            <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
+          </Animatable.View>
+          : null}
+        <View style={styles.button}>
+          <TouchableOpacity
+            disabled={data.readyToPost ? null : true}
+            onPress={updateUser}
+            style={data.readyToPost ?
+              [styles.signUp, { borderColor: '#009387', borderWidth: 1 }]
+              :
+              [styles.signUp, { borderColor: 'grey', borderWidth: 1 }]
+            }
+          >
+            {data.readyToPost ?
+              <Text style={[styles.textSign, { color: '#009387' }]}>Sign up</Text>
+              :
+              <Text style={[styles.textSign, { color: 'grey' }]}>Sign up</Text>
+            }
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -299,14 +334,13 @@ export default function EditProfilePage({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 20
   },
-  commandButton: {
-    padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#009387',
-    alignItems: 'center',
-    marginTop: 10,
-  },
+  textSign: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    margin: 10
+},
   action: {
     flexDirection: 'row',
     marginTop: 10,
@@ -322,9 +356,20 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     color: '#05375a',
   },
-  panelButtonTitle: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: 'white',
+  button:
+  {
+    alignItems: 'center',
+    marginTop: 50
+
   },
+  errorMsg: {
+    color: '#FF0000',
+    fontSize: 14,
+},
+signUp: {
+  width: '100%',
+  height: 50,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
 });

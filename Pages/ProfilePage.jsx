@@ -11,7 +11,7 @@ export default function ProfilePage({ navigation, route }) {
                     onPress={() => navigation.openDrawer()}>
                     <Icon type='font-awesome-5' name="bars" color="#777777" size={20} />
                 </TouchableRipple>
-                <TouchableRipple style={{marginLeft: 300, marginTop:10}} onPress={() => navigation.navigate('EditProfilePage')}>
+                <TouchableRipple style={{marginLeft: 300, marginTop:10}} onPress={() => navigation.navigate('EditProfilePage', route)}>
                     <Icon type='font-awesome-5' name="user-edit" color="#777777" size={20} />
                 </TouchableRipple>
             </View>
@@ -31,30 +31,9 @@ export default function ProfilePage({ navigation, route }) {
                 </View>
             </View>
             <View style={styles.userInfoSection}>
-                {/* <View style={styles.row}>
-                    <Icon type='font-awesome-5' name="map-marker" color="#777777" size={20} />
-                    <Text style={{ color: "#777777", marginLeft: 20 }}>Kolkata, India</Text>
-                </View>
-                <View style={styles.row}>
-                    <Icon type='font-awesome-5' name="phone" color="#777777" size={20} />
-                    <Text style={{ color: "#777777", marginLeft: 20 }}>+91-900000009</Text>
-                </View>  */}
                 <View style={styles.row}>
                     <Icon type='font-awesome-5' name="envelope" color="#777777" size={24} />
                     <Text style={{ color: "#777777", marginLeft: 20 }}>{route.Email}</Text>
-                </View>
-            </View>
-            <View style={styles.infoBoxWrapper}>
-                <View style={[styles.infoBox, {
-                    borderRightColor: '#dddddd',
-                    borderRightWidth: 1
-                }]}>
-                    <Title>140.50 <Icon type='font-awesome-5' name="shekel-sign" color="black" size={15} /></Title>
-                    <Caption>Payments</Caption>
-                </View>
-                <View style={styles.infoBox}>
-                    <Title>12</Title>
-                    <Caption>Reservation</Caption>
                 </View>
             </View>
             <View style={styles.menuWrapper}>
@@ -99,19 +78,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 10,
         marginTop: 10
-    },
-    infoBoxWrapper: {
-        borderBottomColor: '#dddddd',
-        borderBottomWidth: 1,
-        borderTopColor: '#dddddd',
-        borderTopWidth: 1,
-        flexDirection: 'row',
-        height: 100,
-    },
-    infoBox: {
-        width: '50%',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     menuWrapper: {
         marginTop: 10,

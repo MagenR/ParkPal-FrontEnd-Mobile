@@ -8,14 +8,6 @@ export default function DrawerContent(props) {
     return (
         <View style={{ flex: 1 }}>
             <DrawerContentScrollView {...props}>
-                <View style={styles.drawerContent}>
-                    <View style={styles.userInfoSection}>
-                        <View style={{flexDirection: 'column' }}>
-                            <Title style={styles.title}>User Name</Title>
-                            <Caption style={styles.caption}>User Nickname</Caption>
-                        </View>
-                    </View>
-                </View>
                 <Drawer.Section style={styles.drawerSection}>
                     <DrawerItem
                         label="Profile"
@@ -40,21 +32,6 @@ export default function DrawerContent(props) {
 }
 
 const styles = StyleSheet.create({
-    drawerContent: {
-        flex: 1,
-    },
-    userInfoSection: {
-        paddingLeft: 20,
-    },
-    title: {
-        fontSize: 16,
-        marginTop: 3,
-        fontWeight: 'bold',
-    },
-    caption: {
-        fontSize: 14,
-        lineHeight: 14,
-    },
     drawerSection: {
         marginTop: 15,
     },
