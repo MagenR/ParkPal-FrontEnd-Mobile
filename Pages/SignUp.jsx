@@ -4,10 +4,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import React, { useState, useEffect } from 'react';
 
-const hostURL = 'https://192.168.14.182:44341/';
-const emailValidationApi = 'api/users/validateemail';
-const UsernameValidationApi = 'validateusername';
-const signupApi = 'api/users/signup';
+const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/users/';
+const emailValidationApi = '/ValidateEmail';
+const UsernameValidationApi = '/ValdiateUsername';
+const signupApi = 'signup';
 
 export default function SignUp({ navigation }) {
 
