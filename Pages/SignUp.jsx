@@ -4,9 +4,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import React, { useState, useEffect } from 'react';
 
-const hostURL = 'https://localhost:44341/';
-const emailValidationApi = 'api/ValidateEmail';
-const UsernameValidationApi = 'api/ValidateUsername';
+const hostURL = 'https://192.168.14.182:44341/';
+const emailValidationApi = 'api/users/validateemail';
+const UsernameValidationApi = 'validateusername';
+const signupApi = 'api/users/signup';
 
 export default function SignUp({ navigation }) {
 
@@ -17,26 +18,17 @@ export default function SignUp({ navigation }) {
         email: '',
         password: '',
         confirm_password: '',
-        check_textInputChange: false,
+        username_validity: false,
         secureTextEntry: true,
         confirm_secureTextEntry: true,
         isValidPassword: true,
     });
 
     const textInputChange = (val) => {
-        if (val.length !== 0) {
-            setData({
-                ...data,
-                username: val,
-                check_textInputChange: true,
-            });
-        } else {
-            setData({
-                ...data,
-                username: val,
-                check_textInputChange: false,
-            });
-        }
+        setData({
+            ...data,
+            username: val
+        });
     }
 
     const firstNameInputChange = (val) => {
@@ -124,10 +116,10 @@ export default function SignUp({ navigation }) {
         });
     }
 
-    const validateLogin = (login, apiUrl) => {
-        fetch(apiUrl, {
-            method: 'POST',
-            body: login,
+    const getUser = (loginToGet, apiUrl, validityField) => {
+        console.log("get called! URL: " + apiUrl + '?username=' + loginToGet)
+        fetch(apiUrl + '?username=' + loginToGet, {
+            method: 'GET',
             headers: new Headers({
               'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
             })
@@ -138,19 +130,28 @@ export default function SignUp({ navigation }) {
             })
             .then(
               (result) => {
-                console.log("fetch POST= ", result);
+                console.log("fetch GET= ", result);
+                if(result === null)
+                setData({
+                    ...data,
+                    [validityField]: true
+                });
               },
               (error) => {
-                console.log("err post=", error);
+                console.log("err GET=", error);
               });
     }
 
+    const signupUser = (user) => {
+        postUser(user, hostURL + signupApi, 'username_validity');
+    }
+
     const valdiateEmail = (email) => {
-        validateLogin(email, hostURL + emailValidationApi);
+        getUser(email, hostURL + emailValidationApi);
     }
 
     const valdiateUsername = (username) => {
-        validateLogin(username, hostURL + UsernameValidationApi);
+        let response = getUser(username, hostURL + UsernameValidationApi);
     }
 
 
@@ -179,7 +180,7 @@ export default function SignUp({ navigation }) {
                             onChangeText={(val) => textInputChange(val)}
                             onEndEditing={(e) => valdiateUsername(e.nativeEvent.text)}
                         />
-                        {data.check_textInputChange ?
+                        {data.username_validity ?
                             <Animatable.View
                                 animation="bounceIn"
                             >
@@ -190,7 +191,17 @@ export default function SignUp({ navigation }) {
                                 />
 
                             </Animatable.View>
-                            : null}
+                            :                             
+                            <Animatable.View
+                            animation="bounceIn"
+                        >
+                            <Feather
+                                name="check-circle"
+                                color="red"
+                                size={20}
+                            />
+
+                        </Animatable.View>}
                     </View>
                     <Text style={styles.text_footer}>First name</Text>
                     <View style={styles.action}>
