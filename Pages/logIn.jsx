@@ -33,7 +33,7 @@ export default function LogIn({ navigation }) {
     }
 
     const loginHandle = () => {
-        console.log(apiUrl + "?login=" + data.usernameORemail + "&password=" + data.password);
+        //console.log(apiUrl + "?login=" + data.usernameORemail + "&password=" + data.password);
         fetch(apiUrl + "?login=" + data.usernameORemail + "&password=" + data.password, {
             method: 'GET',
             headers: new Headers({
@@ -41,19 +41,19 @@ export default function LogIn({ navigation }) {
             })
           })
             .then(res => {
-              console.log('res=', res);
+              //console.log('res=', res);
               return res.json();
             })
             .then(
               (result) => {
-                console.log("fetch GET= ", result);
+                //console.log("fetch GET= ", result);
                 if(result === "Error. Login failed. no such user exists.")
                     return;
                 else
                     navigation.navigate('ProfilePage', result);
               },
               (error) => {
-                console.log("err GET=", error);
+                //console.log("err GET=", error);
                 //return(
                 //    <View style={{flexDirection: 'row'}}>
                 //        <Icon size={20} type='font-awesome-5' name="exclamation-circle" color='red' />
