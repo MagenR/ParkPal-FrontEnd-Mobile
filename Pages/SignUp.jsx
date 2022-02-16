@@ -5,13 +5,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import React, { useState, useEffect } from 'react';
 
 const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/users/';
-const emailValidationApi = '/ValidateEmail';
-const UsernameValidationApi = '/ValdiateUsername';
+const emailValidationApi = 'ValidateEmail';
+const UsernameValidationApi = 'ValdiateUsername';
 const signupApi = 'signup';
 
 export default function SignUp({ navigation }) {
     
-
     const [data, setData] = React.useState({
         username: '',
         firstName: '',
@@ -19,20 +18,13 @@ export default function SignUp({ navigation }) {
         email: '',
         password: '',
         confirm_password: '',
-        username_validity: false,
+        username_validity: null,
+        email_validity: null,
         secureTextEntry: true,
         confirm_secureTextEntry: true,
         isValidPassword: true,
     });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setRecipe({
-            ...data,
-          [name]: value
-        });
-      };
-
+    
     const textInputChange = (val) => {
         setData({
             ...data,
@@ -125,26 +117,29 @@ export default function SignUp({ navigation }) {
         });
     }
 
-    const getUser = (loginToGet, apiUrl, validityField) => {
-        console.log("get called! URL: " + apiUrl + '?username=' + loginToGet)
-        fetch(apiUrl + '?username=' + loginToGet, {
+    const getUser = (apiUrl, validityField) => {
+        console.log("get called! URL: " + apiUrl)
+        fetch(apiUrl, {
             method: 'GET',
             headers: new Headers({
               'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
             })
           })
             .then(res => {
-              console.log('res=', res);
+              //console.log('res=', JSON.stringify(res));
+              console.log('res.status=', JSON.stringify(res.status));
+              console.log('res.ok=', JSON.stringify(res.ok));
+
+              setData({
+                  ...data,
+                  [validityField]: res.ok
+              })
+
               return res.json();
             })
             .then(
               (result) => {
-                console.log("fetch GET= ", result);
-                if(result === null)
-                setData({
-                    ...data,
-                    [validityField]: true
-                });
+                console.log("fetch GET= ", JSON.stringify(result));
               },
               (error) => {
                 console.log("err GET=", error);
@@ -156,11 +151,40 @@ export default function SignUp({ navigation }) {
     }
 
     const valdiateEmail = (email) => {
-        getUser(email, hostURL + emailValidationApi);
+        getUser(hostURL + email + "/" + emailValidationApi, 'email_validity');
     }
 
     const valdiateUsername = (username) => {
-        let response = getUser(username, hostURL + UsernameValidationApi);
+        getUser(hostURL + username + "/" + UsernameValidationApi, 'username_validity');
+    }
+
+    const renderV = (field) => {
+        console.log(data[field]);
+        if(data[field] === true) 
+            return(
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather
+                        name="check-circle"
+                        color="green"
+                        size={20}
+                    />
+                </Animatable.View>
+            )
+
+        else if(data[field] === false) 
+            return(
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                <Feather
+                    name="check-circle"
+                    color="red"
+                    size={20}
+                />
+                </Animatable.View>
+            )
     }
 
     return (
@@ -185,31 +209,10 @@ export default function SignUp({ navigation }) {
                             placeholder="Your Username"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={handleChange}
-                            //onEndEditing={(e) => valdiateUsername(e.nativeEvent.text)}
+                            onChangeText={(val) => textInputChange(val)}
+                            onEndEditing={(e) => valdiateUsername(e.nativeEvent.text)}
                         />
-                        {data.username_validity ?
-                            <Animatable.View
-                                animation="bounceIn"
-                            >
-                                <Feather
-                                    name="check-circle"
-                                    color="green"
-                                    size={20}
-                                />
-
-                            </Animatable.View>
-                            :                             
-                            <Animatable.View
-                            animation="bounceIn"
-                        >
-                            <Feather
-                                name="check-circle"
-                                color="red"
-                                size={20}
-                            />
-
-                        </Animatable.View>}
+                        {renderV('username_validity')}
                     </View>
                     <Text style={styles.text_footer}>First name</Text>
                     <View style={styles.action}>
@@ -222,7 +225,7 @@ export default function SignUp({ navigation }) {
                             placeholder="Your first name"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={handleChange}
+                            onChangeText={(val) => firstNameInputChange(val)}
 
                         />
                         {data.check_firstNameInputChange ?
@@ -249,7 +252,7 @@ export default function SignUp({ navigation }) {
                             placeholder="Your last name"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={handleChange}
+                            onChangeText={(val) => lastNameInputChange(val)}
 
                         />
                         {data.check_lastNameInputChange ?
@@ -276,21 +279,10 @@ export default function SignUp({ navigation }) {
                             placeholder="Your email"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={handleChange}
-                            //onEndEditing={(e) => valdiateEmail(e.nativeEvent.text)}
+                            onChangeText={(val) => emailInputChange(val)}
+                            onEndEditing={(e) => valdiateEmail(e.nativeEvent.text)}
                         />
-                        {data.check_emailInputChange ?
-                            <Animatable.View
-                                animation="bounceIn"
-                            >
-                                <Feather
-                                    name="check-circle"
-                                    color="green"
-                                    size={20}
-                                />
-
-                            </Animatable.View>
-                            : null}
+                    {renderV('email_validity')}
                     </View>
                     <Text style={[styles.text_footer, {
                         
@@ -306,7 +298,7 @@ export default function SignUp({ navigation }) {
                             secureTextEntry={data.secureTextEntry ? true : false}
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={handleChange}
+                            onChangeText={(val) => handlePasswordChange(val)}
                         />
                         <TouchableOpacity
                             onPress={updateSecureTextEntry}
@@ -346,7 +338,7 @@ export default function SignUp({ navigation }) {
                             secureTextEntry={data.confirm_secureTextEntry ? true : false}
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={handleChange}
+                            onChangeText={(val) => handleConfirmPasswordChange(val)}
                         />
                         <TouchableOpacity
                             onPress={updateConfirmSecureTextEntry}
