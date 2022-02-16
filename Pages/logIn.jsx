@@ -110,38 +110,21 @@ export default function LogIn({ navigation }) {
             <View style={styles.header}>
                 <Text style={styles.text_header}>Welcome!</Text>
             </View>
-            <Animatable.View
-                animation="fadeInUpBig"
-                style={[styles.footer]}
-            >
-                <Text style={[styles.text_footer, {
-                    color: colors.text
-                }]}>Email/Username</Text>
+            <Animatable.View animation="fadeInUpBig" style={[styles.footer]}>
+                <Text style={[styles.text_footer, {color: colors.text}]}>Email/Username</Text>
                 <View style={styles.action}>
-                    <FontAwesome
-                        name="user-o"
-                        color={colors.text}
-                        size={20}
-                    />
+                    <FontAwesome name="user-o" color={colors.text} size={20} />
                     <TextInput
                         placeholder="Your UserName/Email"
                         placeholderTextColor="#666666"
-                        style={[styles.textInput, {
-                            color: colors.text
-                        }]}
+                        style={[styles.textInput, {color: colors.text}]}
                         autoCapitalize="none"
                         onChangeText={(val) => textInputChange(val)}
                         onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
                     />
                     {data.check_textInputChange ?
-                        <Animatable.View
-                            animation="bounceIn"
-                        >
-                            <Feather
-                                name="check-circle"
-                                color="green"
-                                size={20}
-                            />
+                        <Animatable.View animation="bounceIn">
+                            <Feather name="check-circle" color="green" size={20} />
                         </Animatable.View>
                         : null}
                 </View>
@@ -150,40 +133,22 @@ export default function LogIn({ navigation }) {
                         <Text style={styles.errorMsg}>UserName or Email must be 4 characters long.</Text>
                     </Animatable.View>
                 }
-                <Text style={[styles.text_footer, {
-                    color: colors.text
-                }]}>Password</Text>
+                <Text style={[styles.text_footer, {color: colors.text}]}>Password</Text>
                 <View style={styles.action}>
-                    <Feather
-                        name="lock"
-                        color={colors.text}
-                        size={20}
-                    />
+                    <Feather name="lock" color={colors.text} size={20} />
                     <TextInput
                         placeholder="Your Password"
                         placeholderTextColor="#666666"
                         secureTextEntry={data.secureTextEntry ? true : false}
-                        style={[styles.textInput, {
-                            color: colors.text
-                        }]}
+                        style={[styles.textInput, {color: colors.text}]}
                         autoCapitalize="none"
                         onChangeText={(val) => handlePasswordChange(val)}
                     />
-                    <TouchableOpacity
-                        onPress={updateSecureTextEntry}
-                    >
+                    <TouchableOpacity onPress={updateSecureTextEntry}>
                         {data.secureTextEntry ?
-                            <Feather
-                                name="eye-off"
-                                color="grey"
-                                size={20}
-                            />
+                            <Feather name="eye-off" color="grey" size={20} />
                             :
-                            <Feather
-                                name="eye"
-                                color="grey"
-                                size={20}
-                            />
+                            <Feather name="eye" color="grey" size={20} />
                         }
                     </TouchableOpacity>
                 </View>
@@ -199,14 +164,9 @@ export default function LogIn({ navigation }) {
 
                     <TouchableOpacity
                         onPress={() => {loginHandle( data.usernameORemail, data.password )}}
-                        style={[styles.signIn, {
-                            borderColor: '#009387',
-                            borderWidth: 1,
-                        }]}
+                        style={[styles.signIn, {borderColor: '#009387', borderWidth: 1,}]}
                     >
-                        <Text style={[styles.textSign, {
-                            color: '#009387'
-                        }]}>Login</Text>
+                        <Text style={[styles.textSign, {color: '#009387'}]}>Login</Text>
                     </TouchableOpacity>
                 </View>
             </Animatable.View>

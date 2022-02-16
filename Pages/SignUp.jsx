@@ -24,12 +24,12 @@ export default function SignUp({ navigation }) {
         readyToPost: false
     });
 
-    //useEffect(()=> {
-    //    setData({
-    //      ...data,
-    //       readyToPost: checkAllFields()
-    //   });
-    //});
+    useEffect(()=> {
+        setData({
+          ...data,
+           readyToPost: checkAllFields()
+       });
+    }, [data.firstName, data.lastName, data.username_validity, data.password_validty, data.email_validity]);
 
     const textInputChange = (textDat, fieldname) => {
         setData({
@@ -74,12 +74,42 @@ export default function SignUp({ navigation }) {
                 });
     }
 
-    const signupUser = (user) => {
-        postUser(user, hostURL + signupApi, 'username_validity');
+    const postUser = (user) => {
+        fetch(hostURL + signupApi, {
+            method: 'POST',
+            body: JSON.stringify(user),
+            headers: new Headers({
+                'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+            })
+        })
+            .then(res => {
+                //console.log('res=', JSON.stringify(res));
+                console.log('res.status=', JSON.stringify(res.status));
+                console.log('res.ok=', JSON.stringify(res.ok));
+                return res.json();
+            })
+            .then(
+                (result) => {
+                    console.log("fetch POST=", JSON.stringify(result));
+                },
+                (error) => {
+                    console.log("err POST=", error);
+                });
+    }
+
+    const signupUser = () => {
+        let user = {
+            UserName : data.username,
+            Email : data.email,
+            Password : data.password,
+            FirstName : data.firstName,
+            lastName : data.lastName
+        }
+        postUser(user);
+        navigation.navigate('LogIn');
     }
 
     const checkAllFields = () => {
-
         if (
             data.username_validity === true &&
             data.password_validty === true &&
@@ -88,7 +118,6 @@ export default function SignUp({ navigation }) {
             data.lastName!='') 
             return true;
         return false;
-
     }
 
     const valdiateEmail = (email) => {
@@ -225,7 +254,7 @@ export default function SignUp({ navigation }) {
                     <View style={styles.button}>
                         <TouchableOpacity
                             disabled={data.readyToPost ? null : true}
-                            onPress={signupUser}//() => navigation.navigate('LogIn')
+                            onPress={signupUser}
                             style={data.readyToPost ?
                                 [styles.signUp, { borderColor: '#009387', borderWidth: 1 }]
                                 :
