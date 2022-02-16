@@ -131,7 +131,7 @@ export default function SearchParkingPage({ navigation }) {
             <DateTimePicker
               style={dateTimePickerStyles.entranceDateTime}
               value={entranceDate}
-              mode='datetime'
+              mode='date'
               onChange={changeEntraceDate}
             >
             </DateTimePicker>
@@ -142,7 +142,7 @@ export default function SearchParkingPage({ navigation }) {
             <DateTimePicker
               style={dateTimePickerStyles.exitDateTime}
               value={exitDate}
-              mode='datetime'
+              mode='date'
               onChange={changeExitDate}
             >
             </DateTimePicker>

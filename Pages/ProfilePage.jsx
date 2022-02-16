@@ -40,7 +40,7 @@ export default function ProfilePage({ navigation, route }) {
                     <Text style={{ color: "#777777", marginLeft: 20 }}>+91-900000009</Text>
                 </View>  */}
                 <View style={styles.row}>
-                    <Icon type='font-awesome-5' name="envelope" color="#777777" size={20} />
+                    <Icon type='font-awesome-5' name="envelope" color="#777777" size={24} />
                     <Text style={{ color: "#777777", marginLeft: 20 }}>{route.Email}</Text>
                 </View>
             </View>
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         marginBottom: 10,
+        marginTop: 10
     },
     infoBoxWrapper: {
         borderBottomColor: '#dddddd',
