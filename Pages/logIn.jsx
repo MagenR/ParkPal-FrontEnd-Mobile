@@ -50,7 +50,8 @@ export default function LogIn({ navigation }) {
                 if(result === "Error. Login failed. no such user exists.")
                     return;
                 else
-                    navigation.navigate('ProfilePage', result);
+                    navigation.navigate('ProfilePage', {Id: result.Id, UserName: result.UserName, Email: result.Email, FirstName: result.FirstName, LastName: result.LastName});
+                //console.log(result.Id);
               },
               (error) => {
                 //console.log("err GET=", error);

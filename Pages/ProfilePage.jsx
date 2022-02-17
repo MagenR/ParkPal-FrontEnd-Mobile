@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, SafeAreaView, } from 'react-native';
 import { Avatar, Title, Caption, TouchableRipple } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
 
-export default function ProfilePage({ navigation, route }) {
+export default function ProfilePage({ route, navigation }) {
+    const { Id, UserName, Email, FirstName, LastName  } = route.params;
+    console.log("user: =======================" + Id + " " + UserName);
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ flexDirection: 'row' }}>
@@ -26,14 +28,14 @@ export default function ProfilePage({ navigation, route }) {
                     <Title style={[styles.title, {
                         marginTop: 15,
                         marginBottom: 5,
-                    }]}>{route.FirstName} {route.LastName}</Title>
-                    <Caption style={styles.caption}>@{route.UserName}</Caption>
+                    }]}>{FirstName} {LastName}</Title>
+                    <Caption style={styles.caption}>@{UserName}</Caption>
                 </View>
             </View>
             <View style={styles.userInfoSection}>
                 <View style={styles.row}>
                     <Icon type='font-awesome-5' name="envelope" color="#777777" size={24} />
-                    <Text style={{ color: "#777777", marginLeft: 20 }}>{route.Email}</Text>
+                    <Text style={{ color: "#777777", marginLeft: 20 }}>{Email}</Text>
                 </View>
             </View>
             <View style={styles.menuWrapper}>
@@ -45,7 +47,7 @@ export default function ProfilePage({ navigation, route }) {
                 </TouchableRipple>
             </View>
             <View style={styles.menuWrapper}>
-                <TouchableRipple onPress={() => navigation.navigate('History', route.Id)}>
+                <TouchableRipple onPress={() => navigation.navigate('History', Id)}>
                     <View style={styles.menuItem}>
                         <Icon type='font-awesome-5' name="history" color="black" size={25} />
                         <Text style={styles.menuItemText}>Purchase History</Text>
