@@ -100,6 +100,3 @@ const paymentStyles = StyleSheet.create({
         paddingHorizontal: 30,
     },
 });
-
-
-

@@ -14,7 +14,7 @@ export default function ProfilePage({ route, navigation }) {
                     onPress={() => navigation.openDrawer()}>
                     <Icon type='font-awesome-5' name="bars" color="#777777" size={20} />
                 </TouchableRipple>
-                <TouchableRipple style={{marginLeft: 300, marginTop:10}} onPress={() => navigation.navigate('EditProfilePage', route)}>
+                <TouchableRipple style={{marginLeft: 300, marginTop:10}} onPress={() => navigation.navigate('EditProfilePage', {Id: Id, UserName: UserName, Email: Email, FirstName: FirstName, LastName: LastName})}>
                     <Icon type='font-awesome-5' name="user-edit" color="#777777" size={20} />
                 </TouchableRipple>
             </View>

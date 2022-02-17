@@ -26,6 +26,7 @@ export default function App() {
       <Stack.Screen name="SearchParkingPage" component={SearchParkingPage} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
+    
   );
 }
 
