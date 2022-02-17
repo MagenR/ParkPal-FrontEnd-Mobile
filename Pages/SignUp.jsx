@@ -5,8 +5,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import React, { useState, useEffect } from 'react';
 
 const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/users/';
-const emailValidationApi = '/ValidateEmail';
-const UsernameValidationApi = '/ValdiateUsername';
+const emailValidationApi = 'ValidateEmail';
+const UsernameValidationApi = 'ValdiateUsername';
 const signupApi = 'signup';
 
 export default function SignUp({ navigation }) {
@@ -17,88 +17,24 @@ export default function SignUp({ navigation }) {
         lastName: '',
         email: '',
         password: '',
-        confirm_password: '',
-        username_validity: false,
+        username_validity: null,
+        password_validty: null,
+        email_validity: null,
         secureTextEntry: true,
-        confirm_secureTextEntry: true,
-        isValidPassword: true,
+        readyToPost: false
     });
 
-    const textInputChange = (val) => {
+    useEffect(()=> {
+        setData({
+          ...data,
+           readyToPost: checkAllFields()
+       });
+    }, [data.firstName, data.lastName, data.username_validity, data.password_validty, data.email_validity]);
+
+    const textInputChange = (textDat, fieldname) => {
         setData({
             ...data,
-            username: val
-        });
-    }
-
-    const firstNameInputChange = (val) => {
-        if (val.length !== 0) {
-            setData({
-                ...data,
-                firstName: val,
-                check_firstNameInputChange: true,
-            });
-        } else {
-            setData({
-                ...data,
-                firstName: val,
-                check_firstNameInputChange: false,
-            });
-        }
-    }
-
-    const lastNameInputChange = (val) => {
-        if (val.length !== 0) {
-            setData({
-                ...data,
-                lastName: val,
-                check_lastNameInputChange: true
-            });
-        } else {
-            setData({
-                ...data,
-                lastName: val,
-                check_lastNameInputChange: false
-            });
-        }
-    }
-
-    const emailInputChange = (val) => {
-        if (val.length !== 0) {
-            setData({
-                ...data,
-                email: val,
-                check_emailInputChange: true
-            });
-        } else {
-            setData({
-                ...data,
-                email: val,
-                check_emailInputChange: false
-            });
-        }
-    }
-
-    const handlePasswordChange = (val) => {
-        if (val.length >= 8) {
-            setData({
-                ...data,
-                password: val,
-                isValidPassword: true
-            });
-        } else {
-            setData({
-                ...data,
-                password: val,
-                isValidPassword: false
-            });
-        }
-    }
-
-    const handleConfirmPasswordChange = (val) => {
-        setData({
-            ...data,
-            confirm_password: val
+            [fieldname]: textDat
         });
     }
 
@@ -109,51 +45,124 @@ export default function SignUp({ navigation }) {
         });
     }
 
-    const updateConfirmSecureTextEntry = () => {
-        setData({
-            ...data,
-            confirm_secureTextEntry: !data.confirm_secureTextEntry
-        });
-    }
-
-    const getUser = (loginToGet, apiUrl, validityField) => {
-        console.log("get called! URL: " + apiUrl + '?username=' + loginToGet)
-        fetch(apiUrl + '?username=' + loginToGet, {
+    const getUser = (apiUrl, validityField) => {
+        console.log("get called! URL: " + apiUrl)
+        fetch(apiUrl, {
             method: 'GET',
             headers: new Headers({
-              'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+                'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
             })
-          })
+        })
             .then(res => {
-              console.log('res=', res);
-              return res.json();
-            })
-            .then(
-              (result) => {
-                console.log("fetch GET= ", result);
-                if(result === null)
+                //console.log('res=', JSON.stringify(res));
+                console.log('res.status=', JSON.stringify(res.status));
+                console.log('res.ok=', JSON.stringify(res.ok));
+
                 setData({
                     ...data,
-                    [validityField]: true
+                    [validityField]: res.ok
+                })
+
+                return res.json();
+            })
+            .then(
+                (result) => {
+                    console.log("fetch GET= ", JSON.stringify(result));
+                },
+                (error) => {
+                    console.log("err GET=", error);
                 });
-              },
-              (error) => {
-                console.log("err GET=", error);
-              });
     }
 
-    const signupUser = (user) => {
-        postUser(user, hostURL + signupApi, 'username_validity');
+    const postUser = (user) => {
+        fetch(hostURL + signupApi, {
+            method: 'POST',
+            body: JSON.stringify(user),
+            headers: new Headers({
+                'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+            })
+        })
+            .then(res => {
+                //console.log('res=', JSON.stringify(res));
+                console.log('res.status=', JSON.stringify(res.status));
+                console.log('res.ok=', JSON.stringify(res.ok));
+                return res.json();
+            })
+            .then(
+                (result) => {
+                    console.log("fetch POST=", JSON.stringify(result));
+                },
+                (error) => {
+                    console.log("err POST=", error);
+                });
+    }
+
+    const signupUser = () => {
+        let user = {
+            UserName : data.username,
+            Email : data.email,
+            Password : data.password,
+            FirstName : data.firstName,
+            lastName : data.lastName
+        }
+        postUser(user);
+        navigation.navigate('LogIn');
+    }
+
+    const checkAllFields = () => {
+        if (
+            data.username_validity === true &&
+            data.password_validty === true &&
+            data.email_validity === true &&
+            data.firstName!='' && 
+            data.lastName!='') 
+            return true;
+        return false;
     }
 
     const valdiateEmail = (email) => {
-        getUser(email, hostURL + emailValidationApi);
+        getUser(hostURL + email + "/" + emailValidationApi, 'email_validity');
     }
 
     const valdiateUsername = (username) => {
-        let response = getUser(username, hostURL + UsernameValidationApi);
+        getUser(hostURL + username + "/" + UsernameValidationApi, 'username_validity');
     }
 
+    const validatePassword = (password) => {
+        setData({
+            ...data,
+            password_validty: (password.length >= 8) ? true : false
+        });
+    }
+
+    const renderV = (field) => {
+        console.log(data[field]);
+        if (data[field] === true)
+            return (
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather
+                        name="check-circle"
+                        color="green"
+                        size={20}
+                    />
+                </Animatable.View>
+            )
+
+        else if (data[field] === false)
+            return (
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather
+                        name="check-circle"
+                        color="red"
+                        size={20}
+                    />
+                </Animatable.View>
+            )
+    }
 
     return (
         <View style={styles.container}>
@@ -161,225 +170,108 @@ export default function SignUp({ navigation }) {
             <View style={styles.header}>
                 <Text style={styles.text_header}>Register Now!</Text>
             </View>
-            <Animatable.View
-                animation="fadeInUpBig"
-                style={styles.footer}
-            >
+            <Animatable.View animation="fadeInUpBig" style={styles.footer}>
                 <ScrollView>
                     <Text style={styles.text_footer}>Username</Text>
                     <View style={styles.action}>
-                        <FontAwesome
-                            name="user-o"
-                            color="#05375a"
-                            size={20}
-                        />
+                        <FontAwesome name="user-o" color="#05375a" size={20} />
                         <TextInput
                             placeholder="Your Username"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => textInputChange(val)}
+                            onChangeText={(val) => textInputChange(val, 'username')}
                             onEndEditing={(e) => valdiateUsername(e.nativeEvent.text)}
                         />
-                        {data.username_validity ?
-                            <Animatable.View
-                                animation="bounceIn"
-                            >
-                                <Feather
-                                    name="check-circle"
-                                    color="green"
-                                    size={20}
-                                />
-
-                            </Animatable.View>
-                            :                             
-                            <Animatable.View
-                            animation="bounceIn"
-                        >
-                            <Feather
-                                name="check-circle"
-                                color="red"
-                                size={20}
-                            />
-
-                        </Animatable.View>}
+                        {renderV('username_validity')}
                     </View>
                     <Text style={styles.text_footer}>First name</Text>
                     <View style={styles.action}>
-                        <FontAwesome
-                            name="user-o"
-                            color="#05375a"
-                            size={20}
-                        />
+                        <FontAwesome name="user-o" color="#05375a" size={20} />
                         <TextInput
                             placeholder="Your first name"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => firstNameInputChange(val)}
-
+                            onChangeText={(val) => textInputChange(val, 'firstName')}
                         />
                         {data.check_firstNameInputChange ?
-                            <Animatable.View
-                                animation="bounceIn"
-                            >
-                                <Feather
-                                    name="check-circle"
-                                    color="green"
-                                    size={20}
-                                />
-
+                            <Animatable.View animation="bounceIn">
+                                <Feather name="check-circle" color="green" size={20} />
                             </Animatable.View>
                             : null}
                     </View>
                     <Text style={styles.text_footer}>Last name</Text>
                     <View style={styles.action}>
-                        <FontAwesome
-                            name="user-o"
-                            color="#05375a"
-                            size={20}
-                        />
+                        <FontAwesome name="user-o" color="#05375a" size={20} />
                         <TextInput
                             placeholder="Your last name"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => lastNameInputChange(val)}
-
+                            onChangeText={(val) => textInputChange(val, 'lastName')}
                         />
                         {data.check_lastNameInputChange ?
-                            <Animatable.View
-                                animation="bounceIn"
-                            >
-                                <Feather
-                                    name="check-circle"
-                                    color="green"
-                                    size={20}
-                                />
-
+                            <Animatable.View animation="bounceIn">
+                                <Feather name="check-circle" color="green" size={20} />
                             </Animatable.View>
                             : null}
                     </View>
                     <Text style={styles.text_footer}>Email</Text>
                     <View style={styles.action}>
-                        <FontAwesome
-                            name="envelope-o"
-                            color="#05375a"
-                            size={20}
-                        />
+                        <FontAwesome name="envelope-o" color="#05375a" size={20} />
                         <TextInput
                             placeholder="Your email"
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => emailInputChange(val)}
+                            onChangeText={(val) => textInputChange(val, 'email')}
                             onEndEditing={(e) => valdiateEmail(e.nativeEvent.text)}
                         />
-                        {data.check_emailInputChange ?
-                            <Animatable.View
-                                animation="bounceIn"
-                            >
-                                <Feather
-                                    name="check-circle"
-                                    color="green"
-                                    size={20}
-                                />
-
-                            </Animatable.View>
-                            : null}
+                        {renderV('email_validity')}
                     </View>
-                    <Text style={[styles.text_footer, {
-                        
-                    }]}>Password</Text>
+                    <Text style={[styles.text_footer, {}]}>Password</Text>
                     <View style={styles.action}>
-                        <Feather
-                            name="lock"
-                            color="#05375a"
-                            size={20}
-                        />
+                        <Feather name="lock" color="#05375a" size={20} />
                         <TextInput
                             placeholder="Your Password"
                             secureTextEntry={data.secureTextEntry ? true : false}
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={(val) => handlePasswordChange(val)}
+                            onChangeText={text => textInputChange(text, 'password')}
+                            onEndEditing={(e) => validatePassword(e.nativeEvent.text)}
                         />
-                        <TouchableOpacity
-                            onPress={updateSecureTextEntry}
-                        >
+                        <TouchableOpacity onPress={updateSecureTextEntry}>
                             {data.secureTextEntry ?
-                                <Feather
-                                    name="eye-off"
-                                    color="grey"
-                                    size={20}
-                                />
+                                <Feather name="eye-off" color="grey" size={20} />
                                 :
-                                <Feather
-                                    name="eye"
-                                    color="grey"
-                                    size={20}
-                                />
+                                <Feather name="eye" color="grey" size={20} />
                             }
                         </TouchableOpacity>
                     </View>
-                    {data.isValidPassword ? null :
-                    <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
-                    </Animatable.View>
-                }
-
-                    <Text style={[styles.text_footer, {
-                        
-                    }]}>Confirm Password</Text>
-                    <View style={styles.action}>
-                        <Feather
-                            name="lock"
-                            color="#05375a"
-                            size={20}
-                        />
-                        <TextInput
-                            placeholder="Confirm Your Password"
-                            secureTextEntry={data.confirm_secureTextEntry ? true : false}
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={(val) => handleConfirmPasswordChange(val)}
-                        />
-                        <TouchableOpacity
-                            onPress={updateConfirmSecureTextEntry}
-                        >
-                            {data.secureTextEntry ?
-                                <Feather
-                                    name="eye-off"
-                                    color="grey"
-                                    size={20}
-                                />
-                                :
-                                <Feather
-                                    name="eye"
-                                    color="grey"
-                                    size={20}
-                                />
-                            }
-                        </TouchableOpacity>
-                    </View>
-            
+                    {(data.password_validty === false) ? 
+                        <Animatable.View animation="fadeInLeft" duration={500}>
+                            <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
+                        </Animatable.View>
+                        : null 
+                    }
                     <View style={styles.button}>
-
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('LogIn')}
-                            style={[styles.signUp, {
-                                borderColor: '#009387',
-                                borderWidth: 1,
-                            }]}
+                            disabled={data.readyToPost ? null : true}
+                            onPress={signupUser}
+                            style={data.readyToPost ?
+                                [styles.signUp, { borderColor: '#009387', borderWidth: 1 }]
+                                :
+                                [styles.signUp, { borderColor: 'grey', borderWidth: 1 }]
+                            }
                         >
-                            <Text style={[styles.textSign, {
-                                color: '#009387'
-                            }]}>Sign up</Text>
+                            {data.readyToPost ?
+                                <Text style={[styles.textSign, { color: '#009387' }]}>Sign up</Text>
+                                :
+                                <Text style={[styles.textSign, { color: 'grey' }]}>Sign up</Text>
+                            }
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
             </Animatable.View>
-
         </View>
-
     );
-
 };
 
 const styles = StyleSheet.create({

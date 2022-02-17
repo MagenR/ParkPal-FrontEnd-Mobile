@@ -6,7 +6,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-elements';
 import { useTheme } from 'react-native-paper';
 
-const apiUrl = 'api/login'
+const apiUrl = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/users/loginUser'
 
 export default function LogIn({ navigation }) {
 
@@ -15,28 +15,14 @@ export default function LogIn({ navigation }) {
     const [data, setData] = React.useState({
         usernameORemail: '',
         password: '',
-        check_textInputChange: false,
         secureTextEntry: true,
-        isValidUser: true,
-        isValidPassword: true,
     });
 
-    const textInputChange = (val) => {
-        if (val.length !== 0) {
-            setData({
-                ...data,
-                usernameORemail: val,
-                check_textInputChange: true,
-                isValidUser: true
-            });
-        } else {
-            setData({
-                ...data,
-                usernameORemail: val,
-                check_textInputChange: false,
-                isValidUser: false
-            });
-        }
+    const textInputChange = (textDat, fieldname) => {
+        setData({
+            ...data,
+            [fieldname]: textDat
+        });
     }
 
     const updateSecureTextEntry = () => {
@@ -46,61 +32,35 @@ export default function LogIn({ navigation }) {
         });
     }
 
-    const handlePasswordChange = (val) => {
-        if (val.length >= 8) {
-            setData({
-                ...data,
-                password: val,
-                isValidPassword: true
-            });
-        } else {
-            setData({
-                ...data,
-                password: val,
-                isValidPassword: false
-            });
-        }
-    }
-
-    const handleValidUser = (val) => {
-        if (val.length >= 4) {
-            setData({
-                ...data,
-                isValidUser: true
-            });
-        } else {
-            setData({
-                ...data,
-                isValidUser: false
-            });
-        }
-    }
-
-    const loginHandle = (login, password) => {
-        fetch(apiUrl, {
-            method: 'POST',
-            body: JSON.stringify(login, password),
+    const loginHandle = () => {
+        //console.log(apiUrl + "?login=" + data.usernameORemail + "&password=" + data.password);
+        fetch(apiUrl + "?login=" + data.usernameORemail + "&password=" + data.password, {
+            method: 'GET',
             headers: new Headers({
               'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
             })
           })
             .then(res => {
-              console.log('res=', res);
+              //console.log('res=', res);
               return res.json();
             })
             .then(
               (result) => {
-                console.log("fetch POST= ", result);
-                navigation.navigate('ProfilePage', result)
+                //console.log("fetch GET= ", result);
+                if(result === "Error. Login failed. no such user exists.")
+                    return;
+                else
+                    navigation.navigate('ProfilePage', {Id: result.Id, UserName: result.UserName, Email: result.Email, FirstName: result.FirstName, LastName: result.LastName});
+                //console.log(result.Id);
               },
               (error) => {
-                console.log("err post=", error);
-                return(
-                    <View style={{flexDirection: 'row'}}>
-                        <Icon size={20} type='font-awesome-5' name="exclamation-circle" color='red' />
-                        <Text>Oops, that's not a match</Text>
-                    </View>
-                )
+                //console.log("err GET=", error);
+                //return(
+                //    <View style={{flexDirection: 'row'}}>
+                //        <Icon size={20} type='font-awesome-5' name="exclamation-circle" color='red' />
+                //        <Text>Oops, that's not a match</Text>
+                //    </View>
+                //)
               });
     }
 
@@ -110,103 +70,46 @@ export default function LogIn({ navigation }) {
             <View style={styles.header}>
                 <Text style={styles.text_header}>Welcome!</Text>
             </View>
-            <Animatable.View
-                animation="fadeInUpBig"
-                style={[styles.footer]}
-            >
-                <Text style={[styles.text_footer, {
-                    color: colors.text
-                }]}>Email/Username</Text>
+            <Animatable.View animation="fadeInUpBig" style={[styles.footer]}>
+                <Text style={[styles.text_footer, {color: colors.text}]}>Email/Username</Text>
                 <View style={styles.action}>
-                    <FontAwesome
-                        name="user-o"
-                        color={colors.text}
-                        size={20}
-                    />
+                    <FontAwesome name="user-o" color={colors.text} size={20} />
                     <TextInput
                         placeholder="Your UserName/Email"
                         placeholderTextColor="#666666"
-                        style={[styles.textInput, {
-                            color: colors.text
-                        }]}
+                        style={[styles.textInput, {color: colors.text}]}
                         autoCapitalize="none"
-                        onChangeText={(val) => textInputChange(val)}
-                        onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+                        onChangeText={(val) => textInputChange(val, 'usernameORemail')}
                     />
-                    {data.check_textInputChange ?
-                        <Animatable.View
-                            animation="bounceIn"
-                        >
-                            <Feather
-                                name="check-circle"
-                                color="green"
-                                size={20}
-                            />
-                        </Animatable.View>
-                        : null}
                 </View>
-                {data.isValidUser ? null :
-                    <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>UserName or Email must be 4 characters long.</Text>
-                    </Animatable.View>
-                }
-                <Text style={[styles.text_footer, {
-                    color: colors.text
-                }]}>Password</Text>
+                <Text style={[styles.text_footer, {color: colors.text}]}>Password</Text>
                 <View style={styles.action}>
-                    <Feather
-                        name="lock"
-                        color={colors.text}
-                        size={20}
-                    />
+                    <Feather name="lock" color={colors.text} size={20} />
                     <TextInput
                         placeholder="Your Password"
                         placeholderTextColor="#666666"
                         secureTextEntry={data.secureTextEntry ? true : false}
-                        style={[styles.textInput, {
-                            color: colors.text
-                        }]}
+                        style={[styles.textInput, {color: colors.text}]}
                         autoCapitalize="none"
-                        onChangeText={(val) => handlePasswordChange(val)}
+                        onChangeText={(val) => textInputChange(val, 'password')}
                     />
-                    <TouchableOpacity
-                        onPress={updateSecureTextEntry}
-                    >
+                    <TouchableOpacity onPress={updateSecureTextEntry}>
                         {data.secureTextEntry ?
-                            <Feather
-                                name="eye-off"
-                                color="grey"
-                                size={20}
-                            />
+                            <Feather name="eye-off" color="grey" size={20} />
                             :
-                            <Feather
-                                name="eye"
-                                color="grey"
-                                size={20}
-                            />
+                            <Feather name="eye" color="grey" size={20} />
                         }
                     </TouchableOpacity>
                 </View>
-                {data.isValidPassword ? null :
-                    <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
-                    </Animatable.View>
-                }
                 <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
                     <Text style={{ color: '#009387', marginTop: 15 }}>Don't have an accunt? Sign Up</Text>
                 </TouchableOpacity>
                 <View style={styles.button}>
-
                     <TouchableOpacity
-                        onPress={() => {loginHandle( data.usernameORemail, data.password )}}
-                        style={[styles.signIn, {
-                            borderColor: '#009387',
-                            borderWidth: 1,
-                        }]}
+                        onPress={loginHandle}
+                        style={[styles.signIn, {borderColor: '#009387', borderWidth: 1,}]}
                     >
-                        <Text style={[styles.textSign, {
-                            color: '#009387'
-                        }]}>Login</Text>
+                        <Text style={[styles.textSign, {color: '#009387'}]}>Login</Text>
                     </TouchableOpacity>
                 </View>
             </Animatable.View>
