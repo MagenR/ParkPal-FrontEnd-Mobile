@@ -9,7 +9,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import { useTheme, Avatar, TouchableRipple } from 'react-native-paper';
+import { useTheme, TouchableRipple } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -105,7 +105,7 @@ export default function EditProfilePage({ navigation, route }) {
 
   const postUser = (user) => {
     fetch(hostURL + updateApi , {
-      method: 'POST',
+      method: 'PUT',
       body: JSON.stringify(user),
       headers: new Headers({
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
@@ -119,7 +119,7 @@ export default function EditProfilePage({ navigation, route }) {
       })
       .then(
         (result) => {
-          console.log("fetch POST=", JSON.stringify(result));
+          console.log("fetch PUT=", JSON.stringify(result));
           navigation.navigate('ProfilePage', {Id: user.Id, UserName: user.UserName, Email: user.Email, FirstName: user.FirstName, LastName: user.LastName});
         },
         (error) => {

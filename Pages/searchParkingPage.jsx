@@ -8,7 +8,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 
-const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo'
+const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo';
+const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/';
+const searchMatch = 'SearchMath';
 
 export default function SearchParkingPage({ navigation }) {
   const [location, setLocation] = useState(null);
@@ -57,6 +59,40 @@ export default function SearchParkingPage({ navigation }) {
 
   if (mapRegion === null) {
     return <Text style={{ margin: 50 }}>Map region doesn't exist.</Text>
+  }
+
+  const getMacth = (destination) => {
+    fetch(hostURL + searchMatch, {
+        method: 'GET',
+        body: JSON.stringify(destination),
+        headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+        })
+    })
+        .then(res => {
+            //console.log('res=', JSON.stringify(res));
+            console.log('res.status=', JSON.stringify(res.status));
+            console.log('res.ok=', JSON.stringify(res.ok));
+            return res.json();
+        })
+        .then(
+            (result) => {
+                console.log("fetch GET= ", JSON.stringify(result));
+                navigation.navigate('PaymentPage', {pName:result.Name, pAdress:result.Adress})
+            },
+            (error) => {
+                console.log("err GET=", error);
+            });
+  }
+
+  const destionation = () => {
+    let destination = {
+      Longitude : mapRegion.longitude,
+      Latitude : mapRegion.latitude,
+      StartTime : entranceDate,
+      EndTime : exitDate
+    }
+    getMacth(destination);
   }
 
   return (
@@ -150,7 +186,7 @@ export default function SearchParkingPage({ navigation }) {
           <TouchableHighlight>
             <Button
               title="Reserve a parking"
-              onPress={() => navigation.navigate('PaymentPage')}
+              onPress={destionation}
               buttonStyle={{
                 backgroundColor: '#009387',
                 borderWidth: 2,
