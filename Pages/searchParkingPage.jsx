@@ -9,9 +9,7 @@ import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo';
-const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/';
-const hostUrl = 'https://localhost:44341/api/parkinglots'
-const searchMatch = 'SearchMath';
+const hostURL = 'https://proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/SearchByCoordinatesAndTimeSlot?';
 
 export default function SearchParkingPage({ navigation }) {
   const [location, setLocation] = useState(null);
@@ -19,26 +17,7 @@ export default function SearchParkingPage({ navigation }) {
   const [mapRegion, setMapRegion] = useState(null);
   const [entranceDateTime, setEntranceDateTime] = useState(new Date());
   const [exitDateTime, setExitDateTime] = useState(new Date());
-  const [markers, setMarkers] = useState(
-    [
-      {
-        title: 'Gouje and Daniel',
-        coordinates: {
-          longitude: 34.86672,
-          latitude: 32.22320
-        },
-        color: 'green'
-      },
-      {
-        title: 'Sun Cafe',
-        coordinates: {
-          longitude: 34.87967,
-          latitude: 32.21345
-        },
-        color: 'blue'
-      }
-    ]
-  )
+  const [markers, setMarkers] = useState([])
 
   const changeEntraceDate = (event, selectedDate) => {
     const currentDateTime = selectedDate || entranceDateTime;
@@ -54,10 +33,10 @@ export default function SearchParkingPage({ navigation }) {
     newMarkers.map(newM => 
       setMarkers([...items,
       {
-       title: newM.name,
+       title: newM.Name,
        coordinate: {
-         longitude: newM.longitude,
-         latitude: newM.latitude
+         longitude: newM.Longitude,
+         latitude: newM.Latitude
        },
       }]))
   }
@@ -78,6 +57,8 @@ export default function SearchParkingPage({ navigation }) {
         longitudeDelta: 0.0922,
         latitudeDelta: 0.0421
       });
+
+      setMarkers(markers);
     })();
   }, []);
 
@@ -93,10 +74,10 @@ export default function SearchParkingPage({ navigation }) {
     return <Text style={{ margin: 50 }}>Map region doesn't exist.</Text>
   }
 
-  const getMacth = (destination) => {
-    fetch(hostURL + searchMatch, {
+  const getMacth = () => {
+    fetch(hostURL + 'latitude=' + mapRegion.latitude + '&longitude=' + mapRegion.longitude + '&startTime=' + entranceDateTime + '&endTime=' +  exitDateTime, {
         method: 'GET',
-        body: JSON.stringify(destination),
+        body: JSON.stringify(),
         headers: new Headers({
             'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
         })
@@ -116,16 +97,6 @@ export default function SearchParkingPage({ navigation }) {
             (error) => {
                 console.log("err GET=", error);
             });
-  }
-
-  const destionation = () => {
-    let destination = {
-      Longitude : mapRegion.longitude,
-      Latitude : mapRegion.latitude,
-      StartTime : entranceDate,
-      EndTime : exitDate
-    }
-    getMacth(destination);
   }
 
   return (
@@ -184,7 +155,6 @@ export default function SearchParkingPage({ navigation }) {
               longitude: marker.coordinates.longitude,
               latitude: marker.coordinates.latitude}}
             title = {marker.title}
-            pinColor = {marker.color}
             />
           ))}
           <Circle
@@ -229,7 +199,7 @@ export default function SearchParkingPage({ navigation }) {
           <TouchableHighlight>
             <Button
               title="Reserve a parking"
-              onPress={destionation}
+              onPress={getMacth}
               buttonStyle={{
                 backgroundColor: '#009387',
                 borderWidth: 2,
