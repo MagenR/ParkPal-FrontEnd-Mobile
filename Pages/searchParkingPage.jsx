@@ -183,12 +183,6 @@ export default function SearchParkingPage({ navigation }) {
               onChange={changeEntraceDate}
             >
             </DateTimePicker>
-            <DateTimePicker
-              style={dateTimePickerStyles.entranceDateTime}
-              value={entranceDateTime}
-              mode='time'
-            >
-            </DateTimePicker>
           </View>
           <View style={{ flexDirection: 'row', alignContent: 'space-around', paddingTop: 20 }}>
             <Icon style={{ marginRight: 10 }} size={24} type='font-awesome-5' name="sign-out-alt" />
