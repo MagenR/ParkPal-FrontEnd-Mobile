@@ -30,14 +30,14 @@ export default function SearchParkingPage({ navigation }) {
   };
 
   const changeMarkers = (newMarkers, items) => {
-    newMarkers.map(newM => 
+    newMarkers.map(newM =>
       setMarkers([...items,
       {
-       title: newM.Name,
-       coordinate: {
-         longitude: newM.Longitude,
-         latitude: newM.Latitude
-       },
+        title: newM.Name,
+        coordinate: {
+          longitude: newM.Longitude,
+          latitude: newM.Latitude
+        },
       }]))
   }
 
@@ -57,8 +57,6 @@ export default function SearchParkingPage({ navigation }) {
         longitudeDelta: 0.0922,
         latitudeDelta: 0.0421
       });
-
-      setMarkers(markers);
     })();
   }, []);
 
@@ -75,28 +73,28 @@ export default function SearchParkingPage({ navigation }) {
   }
 
   const getMacth = () => {
-    fetch(hostURL + 'latitude=' + mapRegion.latitude + '&longitude=' + mapRegion.longitude + '&startTime=' + entranceDateTime + '&endTime=' +  exitDateTime, {
-        method: 'GET',
-        body: JSON.stringify(),
-        headers: new Headers({
-            'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-        })
+    fetch(hostURL + 'latitude=' + mapRegion.latitude + '&longitude=' + mapRegion.longitude + '&startTime=' + entranceDateTime + '&endTime=' + exitDateTime, {
+      method: 'GET',
+      body: JSON.stringify(),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
     })
-        .then(res => {
-            //console.log('res=', JSON.stringify(res));
-            console.log('res.status=', JSON.stringify(res.status));
-            console.log('res.ok=', JSON.stringify(res.ok));
-            return res.json();
-        })
-        .then(
-            (result) => {
-                console.log("fetch GET= ", JSON.stringify(result));
-                changeMarkers(result, markers)
-                //navigation.navigate('PaymentPage', {pName:result.Name, pAdress:result.Adress})
-            },
-            (error) => {
-                console.log("err GET=", error);
-            });
+      .then(res => {
+        //console.log('res=', JSON.stringify(res));
+        console.log('res.status=', JSON.stringify(res.status));
+        console.log('res.ok=', JSON.stringify(res.ok));
+        return res.json();
+      })
+      .then(
+        (result) => {
+          console.log("fetch GET= ", JSON.stringify(result));
+          changeMarkers(result, markers)
+          //navigation.navigate('PaymentPage', {pName:result.Name, pAdress:result.Adress})
+        },
+        (error) => {
+          console.log("err GET=", error);
+        });
   }
 
   return (
@@ -143,18 +141,19 @@ export default function SearchParkingPage({ navigation }) {
           onRegionChange={region => setMapRegion(region)}
         >
           <MapView.Marker
-          coordinate = {{
-            longitude: mapRegion.longitude,
-            latitude: mapRegion.latitude
-          }}
-          title = "Your Location"
+            coordinate={{
+              longitude: mapRegion.longitude,
+              latitude: mapRegion.latitude
+            }}
+            title="Your Location"
           />
           {markers.map(marker => (
             <MapView.Marker
-            coordinate = {{
-              longitude: marker.coordinates.longitude,
-              latitude: marker.coordinates.latitude}}
-            title = {marker.title}
+              coordinate={{
+                longitude: marker.coordinates.longitude,
+                latitude: marker.coordinates.latitude
+              }}
+              title={marker.title}
             />
           ))}
           <Circle
@@ -180,8 +179,14 @@ export default function SearchParkingPage({ navigation }) {
             <DateTimePicker
               style={dateTimePickerStyles.entranceDateTime}
               value={entranceDateTime}
-              mode='datetime'
+              mode='date'
               onChange={changeEntraceDate}
+            >
+            </DateTimePicker>
+            <DateTimePicker
+              style={dateTimePickerStyles.entranceDateTime}
+              value={entranceDateTime}
+              mode='time'
             >
             </DateTimePicker>
           </View>
@@ -191,7 +196,7 @@ export default function SearchParkingPage({ navigation }) {
             <DateTimePicker
               style={dateTimePickerStyles.exitDateTime}
               value={exitDateTime}
-              mode='datetime'
+              mode='date'
               onChange={changeExitDate}
             >
             </DateTimePicker>
