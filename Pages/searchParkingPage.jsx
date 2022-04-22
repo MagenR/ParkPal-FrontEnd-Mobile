@@ -9,15 +9,16 @@ import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo';
-//const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/';
-//const searchMatch = 'SearchMath';
+const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/';
+const hostUrl = 'https://localhost:44341/api/parkinglots'
+const searchMatch = 'SearchMath';
 
 export default function SearchParkingPage({ navigation }) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [mapRegion, setMapRegion] = useState(null);
-  const [entranceDate, setEntranceDate] = useState(new Date());
-  const [exitDate, setExitDate] = useState(new Date());
+  const [entranceDateTime, setEntranceDateTime] = useState(new Date());
+  const [exitDateTime, setExitDateTime] = useState(new Date());
   const [markers, setMarkers] = useState(
     [
       {
@@ -40,14 +41,26 @@ export default function SearchParkingPage({ navigation }) {
   )
 
   const changeEntraceDate = (event, selectedDate) => {
-    const currentDate = selectedDate || entranceDate;
-    setEntranceDate(currentDate);
+    const currentDateTime = selectedDate || entranceDateTime;
+    setEntranceDateTime(currentDateTime);
   };
 
   const changeExitDate = (event, selectedDate) => {
-    const currentDate = selectedDate || exitDate;
-    setExitDate(currentDate);
+    const currentDateTime = selectedDate || exitDateTime;
+    setExitDateTime(currentDateTime);
   };
+
+  const changeMarkers = (newMarkers, items) => {
+    newMarkers.map(newM => 
+      setMarkers([...items,
+      {
+       title: newM.name,
+       coordinate: {
+         longitude: newM.longitude,
+         latitude: newM.latitude
+       },
+      }]))
+  }
 
   useEffect(() => {
     (async () => {
@@ -80,41 +93,40 @@ export default function SearchParkingPage({ navigation }) {
     return <Text style={{ margin: 50 }}>Map region doesn't exist.</Text>
   }
 
-  //const getMacth = (destination) => {
-  //  fetch(hostURL + searchMatch, {
-  //      method: 'GET',
-  //      body: JSON.stringify(destination),
-  //      headers: new Headers({
-  //          'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-  //      })
-  //  })
-  //      .then(res => {
-  //          //console.log('res=', JSON.stringify(res));
-  //          console.log('res.status=', JSON.stringify(res.status));
-  //          console.log('res.ok=', JSON.stringify(res.ok));
-  //          return res.json();
-  //      })
-  //      .then(
-  //          (result) => {
-  //              console.log("fetch GET= ", JSON.stringify(result));
-  //              navigation.navigate('PaymentPage', {pName:result.Name, pAdress:result.Adress})
-  //          },
-  //          (error) => {
-  //              console.log("err GET=", error);
-  //          });
-  //}
+  const getMacth = (destination) => {
+    fetch(hostURL + searchMatch, {
+        method: 'GET',
+        body: JSON.stringify(destination),
+        headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+        })
+    })
+        .then(res => {
+            //console.log('res=', JSON.stringify(res));
+            console.log('res.status=', JSON.stringify(res.status));
+            console.log('res.ok=', JSON.stringify(res.ok));
+            return res.json();
+        })
+        .then(
+            (result) => {
+                console.log("fetch GET= ", JSON.stringify(result));
+                changeMarkers(result, markers)
+                //navigation.navigate('PaymentPage', {pName:result.Name, pAdress:result.Adress})
+            },
+            (error) => {
+                console.log("err GET=", error);
+            });
+  }
 
-  //const destionation = () => {
-  //  let destination = {
-  //    Longitude : mapRegion.longitude,
-  //    Latitude : mapRegion.latitude,
-  //    StartTime : entranceDate,
-  //    EndTime : exitDate
-  //  }
-  //  getMacth(destination);
-  //}
-
-  //
+  const destionation = () => {
+    let destination = {
+      Longitude : mapRegion.longitude,
+      Latitude : mapRegion.latitude,
+      StartTime : entranceDate,
+      EndTime : exitDate
+    }
+    getMacth(destination);
+  }
 
   return (
     <View style={SearchParkingStyles.container}>
@@ -197,7 +209,7 @@ export default function SearchParkingPage({ navigation }) {
             <Text style={dateTimePickerStyles.header}>Entrance:</Text>
             <DateTimePicker
               style={dateTimePickerStyles.entranceDateTime}
-              value={entranceDate}
+              value={entranceDateTime}
               mode='datetime'
               onChange={changeEntraceDate}
             >
@@ -208,7 +220,7 @@ export default function SearchParkingPage({ navigation }) {
             <Text style={dateTimePickerStyles.header}>Exit:</Text>
             <DateTimePicker
               style={dateTimePickerStyles.exitDateTime}
-              value={exitDate}
+              value={exitDateTime}
               mode='datetime'
               onChange={changeExitDate}
             >
@@ -217,7 +229,7 @@ export default function SearchParkingPage({ navigation }) {
           <TouchableHighlight>
             <Button
               title="Reserve a parking"
-              //onPress={destionation}
+              onPress={destionation}
               buttonStyle={{
                 backgroundColor: '#009387',
                 borderWidth: 2,
