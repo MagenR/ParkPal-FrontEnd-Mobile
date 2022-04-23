@@ -15,15 +15,25 @@ export default function SearchParkingPage({ navigation }) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [mapRegion, setMapRegion] = useState(null);
-  const [dates, setDate] = useState({
-    entranceDate: new Date(),
-    exitDate: new Date()
-  });
-  const [nearestParkingLot, setNearestParkingLot] = useState(null);
-  const[show, setShow] = useState({
-    entrancePicker: false,
-    exitPicker: false
-  });
+  const [entranceDate, setEntranceDate] = useState(new Date());
+  const [exitDate, setExitDate] = useState(new Date());
+  const [nearestParkingLot, setNearestParkingLot] = useState({
+    startDate: entranceDate,
+    endDate: exitDate,
+    parkingLotName: '',
+    location: '',
+  })
+
+  const changeEntraceDate = (event, selectedDate) => {
+    const currentDate = selectedDate || entranceDate;
+    setEntranceDate(currentDate);
+  };
+
+  const changeExitDate = (event, selectedDate) => {
+    const currentDate = selectedDate || exitDate;
+    setExitDate(currentDate);
+  };
+
 
   useEffect(() => {
     (async () => {
@@ -91,31 +101,33 @@ export default function SearchParkingPage({ navigation }) {
   const getParkingLot = (apiUrl, destination) => {
     console.log("get called! URL: " + apiUrl)
     fetch(hostURL, {
-        method: 'GET',
-        body: JSON.stringify(destination),
-        headers: new Headers({
-            'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-        })
+      method: 'GET',
+      body: JSON.stringify(destination),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
     })
-        .then(res => {
-            //console.log('res=', JSON.stringify(res));
-            console.log('res.status=', JSON.stringify(res.status));
-            console.log('res.ok=', JSON.stringify(res.ok));
+      .then(res => {
+        //console.log('res=', JSON.stringify(res));
+        console.log('res.status=', JSON.stringify(res.status));
+        console.log('res.ok=', JSON.stringify(res.ok));
 
-            return res.json();
-        })
-        .then(
-            (result) => {
-                console.log("fetch GET= ", JSON.stringify(result));
-                setNearestParkingLot({
-                  result
-              })
-            },
-            (error) => {
-                console.log("err GET=", error);
-            });
-
-            navigation.navigate('PaymentPage', nearestParkingLot);
+        return res.json();
+      })
+      .then(
+        (result) => {
+          console.log("fetch GET= ", JSON.stringify(result));
+          setNearestParkingLot({
+            ...nearestParkingLot,
+            parkingLotName: result.name,
+            location: result.address,
+        });
+          
+        },
+        (error) => {
+          console.log("err GET=", error);
+        });
+        navigation.navigate('PaymentPage', nearestParkingLot);
   };
 //SearchVacant?startTime={startTime}&endTime={endTime}
   const getParkingLots = () => {
@@ -155,17 +167,68 @@ export default function SearchParkingPage({ navigation }) {
 
   return (
     <View style={SearchParkingStyles.container}>
-        <View style={{marginTop: 5, alignItems: 'flex-start', paddingLeft: 10, paddingBottom: 5}}>
+      <View style={{ marginTop: 50, alignItems: 'flex-start', paddingLeft: 10, paddingBottom: 5 }}>
         <TouchableHighlight onPress={() => navigation.openDrawer()}>
           <Icon type='font-awesome-5' name="bars" color="#777777" size={20} />
         </TouchableHighlight>
-        </View>
+      </View>
+      <View>
+        <GooglePlacesAutocomplete
+          placeholder="Search for Location"
+          fetchDetails={true}
+          nearbyPlacesAPI="GooglePlacesSearch"
+          debounce={400}
+          onPress={(data, details = null) => {
+            console.log(data, details)
+            setMapRegion({
+              latitude: details.geometry.location.lat,
+              longitude: details.geometry.location.lng,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421
+            })
+          }}
+          query={{
+            key: GOOGLE_MAPS_APIKEY,
+            types: "establishment",
+            location: `${mapRegion.latitude}, ${mapRegion.longitude}`
+          }}
+          textInputProps={{ placeholderTextColor: '#009387' }}
+          styles={searchInputBoxStyles}
+        />
 
-        <Animatable.View
-                animation="fadeInUpBig"
-                style={[SearchParkingStyles.footer]}
-            >
-        <Text >Choose a date</Text>
+        <MapView
+          style={mapStyles.map}
+          region={mapRegion}
+          initialRegion={{
+            "latitude": 32.109333,
+            "latitudeDelta": 0.0922,
+            "longitude": 34.855499,
+            "longitudeDelta": 0.0421,
+          }}
+          onRegionChange={region => setMapRegion(region)}
+        >
+          <Marker
+            coordinate={{
+              longitude: mapRegion.longitude,
+              latitude: mapRegion.latitude
+            }}
+          ></Marker>
+          <Circle
+            center={{
+              longitude: mapRegion.longitude,
+              latitude: mapRegion.latitude
+            }}
+            radius={1000}
+            strokeColor="transparent"
+            fillColor="rgba(255,0,0,0.3)"
+          ></Circle>
+        </MapView>
+      </View>
+      <Animatable.View
+        animation="fadeInUpBig"
+        style={[SearchParkingStyles.footer]}
+      >
+        <Text style={SearchParkingStyles.text_header}>Choose a date and a time</Text>
         <View>
           <View style={{ flexDirection: 'row', alignContent: 'space-around' }} > 
             <Button title="Pick start" onPress={() => showMode('entrancePicker')}></Button>
@@ -204,8 +267,8 @@ export default function SearchParkingPage({ navigation }) {
             />
           </TouchableHighlight>
         </View>
-        </Animatable.View>
-      </View>
+      </Animatable.View>
+    </View>
   )
 }
 

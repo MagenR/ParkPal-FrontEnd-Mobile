@@ -16,7 +16,7 @@ export default function PaymentPage({ navigation, route }) {
     return (
         <View style={paymentStyles.container}>
             <View style={paymentStyles.textContainer}>
-                <Text style={paymentStyles.text}>Location: {route.name}</Text>
+                <Text style={paymentStyles.text}>Location: {route.address}</Text>
                 <Text style={paymentStyles.text}>Date:</Text>
                 <Text style={paymentStyles.text}>Entry Time:</Text>
                 <Text style={paymentStyles.text}>Exit Time:</Text>
