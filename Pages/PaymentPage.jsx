@@ -4,6 +4,7 @@ import { Input, Icon, Button } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 
 export default function PaymentPage({ navigation, route }) {
+    const {pName, pAdress} = route.params
     const [payment, setPayment] = useState({ cardNumber: '', expiration: '', cvv: '', id: '' })
 
     const updatePayment = (key, value) => {
@@ -16,7 +17,7 @@ export default function PaymentPage({ navigation, route }) {
     return (
         <View style={paymentStyles.container}>
             <View style={paymentStyles.textContainer}>
-                <Text style={paymentStyles.text}>Location: {route.address}</Text>
+                <Text style={paymentStyles.text}>Location: {pAdress}</Text>
                 <Text style={paymentStyles.text}>Date:</Text>
                 <Text style={paymentStyles.text}>Entry Time:</Text>
                 <Text style={paymentStyles.text}>Exit Time:</Text>
@@ -100,6 +101,3 @@ const paymentStyles = StyleSheet.create({
         paddingHorizontal: 30,
     },
 });
-
-
-

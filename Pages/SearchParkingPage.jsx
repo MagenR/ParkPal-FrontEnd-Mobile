@@ -8,32 +8,38 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 
-const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo'
-const apiUrl = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/SearchVacant';
+const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo';
+const hostURL = 'https://proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/SearchByCoordinatesAndTimeSlot?';
 
 export default function SearchParkingPage({ navigation }) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [mapRegion, setMapRegion] = useState(null);
-  const [entranceDate, setEntranceDate] = useState(new Date());
-  const [exitDate, setExitDate] = useState(new Date());
-  const [nearestParkingLot, setNearestParkingLot] = useState({
-    startDate: entranceDate,
-    endDate: exitDate,
-    parkingLotName: '',
-    location: '',
-  })
+  const [entranceDateTime, setEntranceDateTime] = useState(new Date());
+  const [exitDateTime, setExitDateTime] = useState(new Date());
+  const [markers, setMarkers] = useState([])
 
   const changeEntraceDate = (event, selectedDate) => {
-    const currentDate = selectedDate || entranceDate;
-    setEntranceDate(currentDate);
+    const currentDateTime = selectedDate || entranceDateTime;
+    setEntranceDateTime(currentDateTime);
   };
 
   const changeExitDate = (event, selectedDate) => {
-    const currentDate = selectedDate || exitDate;
-    setExitDate(currentDate);
+    const currentDateTime = selectedDate || exitDateTime;
+    setExitDateTime(currentDateTime);
   };
 
+  const changeMarkers = (newMarkers, items) => {
+    newMarkers.map(newM =>
+      setMarkers([...items,
+      {
+        title: newM.Name,
+        coordinate: {
+          longitude: newM.Longitude,
+          latitude: newM.Latitude
+        },
+      }]))
+  }
 
   useEffect(() => {
     (async () => {
@@ -54,105 +60,6 @@ export default function SearchParkingPage({ navigation }) {
     })();
   }, []);
 
-  const onChange = (event, selectedDate, date) => {
-    const currentDate = selectedDate || dates[date];
-    setShow(Platform.OS === 'ios');
-    setDate ({
-      ...dates,
-      [date]: currentDate
-    });
-    let tempDate = new Date(currentDate);
-    let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
-    console.log(fDate);
-  }
-
-  const formatDateToText = (date) => {
-    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-  }
-
-  const onChangeEntrance = (event, selectedDate) => {
-    onChange(event, selectedDate, 'entranceDate')
-   }
-
-  const onChangeExit = (event, selectedDate) => {
-    onChange(event, selectedDate, 'exitDate')
-   }
-
-  const showMode = (currentMode) => {
-    setShow({
-      ...show,
-      [currentMode]: true});
-  }
-
-  const destination = () => {
-    let destination = {
-      latitude: mapRegion.latitude,
-      longitude: mapRegion.longitude,
-      startTime: entranceDate,
-      endTime: exitDate
-    }
-    getParkingLot(destination)
-  }
-
-  const parseDate = (date) => {
-    return DateTime.ParseExact(date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-  }
-
-  const getParkingLot = (apiUrl, destination) => {
-    console.log("get called! URL: " + apiUrl)
-    fetch(hostURL, {
-      method: 'GET',
-      body: JSON.stringify(destination),
-      headers: new Headers({
-        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-      })
-    })
-      .then(res => {
-        //console.log('res=', JSON.stringify(res));
-        console.log('res.status=', JSON.stringify(res.status));
-        console.log('res.ok=', JSON.stringify(res.ok));
-
-        return res.json();
-      })
-      .then(
-        (result) => {
-          console.log("fetch GET= ", JSON.stringify(result));
-          setNearestParkingLot({
-            ...nearestParkingLot,
-            parkingLotName: result.name,
-            location: result.address,
-        });
-          
-        },
-        (error) => {
-          console.log("err GET=", error);
-        });
-        navigation.navigate('PaymentPage', nearestParkingLot);
-  };
-//SearchVacant?startTime={startTime}&endTime={endTime}
-  const getParkingLots = () => {
-    //console.log(dates.entranceDate.toISOString().slice(0, 19).replace('T', ' '));
-    //return;
-    fetch(apiUrl + "?startTime=" + dates.entranceDate.toISOString() + "&endTime=" + dates.exitDate.toISOString(), {
-        method: 'GET',
-        headers: new Headers({
-          'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
-        })
-      })
-        .then(res => {
-          console.log('res=', res);
-          return res.json();
-        })
-        .then(
-          (result) => {
-            console.log("fetch GET= ", result);
-          },
-          (error) => {
-            console.log("err GET=", error);
-          });
-}
-
-
   if (errorMsg) {
     return <Text style={{ margin: 50 }}>{errorMsg}</Text>
   }
@@ -163,6 +70,31 @@ export default function SearchParkingPage({ navigation }) {
 
   if (mapRegion === null) {
     return <Text style={{ margin: 50 }}>Map region doesn't exist.</Text>
+  }
+
+  const getMacth = () => {
+    fetch(hostURL + 'latitude=' + mapRegion.latitude + '&longitude=' + mapRegion.longitude + '&startTime=' + entranceDateTime + '&endTime=' + exitDateTime, {
+      method: 'GET',
+      body: JSON.stringify(),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
+    })
+      .then(res => {
+        //console.log('res=', JSON.stringify(res));
+        console.log('res.status=', JSON.stringify(res.status));
+        console.log('res.ok=', JSON.stringify(res.ok));
+        return res.json();
+      })
+      .then(
+        (result) => {
+          console.log("fetch GET= ", JSON.stringify(result));
+          changeMarkers(result, markers)
+          //navigation.navigate('PaymentPage', {pName:result.Name, pAdress:result.Adress})
+        },
+        (error) => {
+          console.log("err GET=", error);
+        });
   }
 
   return (
@@ -179,6 +111,7 @@ export default function SearchParkingPage({ navigation }) {
           nearbyPlacesAPI="GooglePlacesSearch"
           debounce={400}
           onPress={(data, details = null) => {
+            // 'details' is provided when fetchDetails = true
             console.log(data, details)
             setMapRegion({
               latitude: details.geometry.location.lat,
@@ -207,12 +140,22 @@ export default function SearchParkingPage({ navigation }) {
           }}
           onRegionChange={region => setMapRegion(region)}
         >
-          <Marker
+          <MapView.Marker
             coordinate={{
               longitude: mapRegion.longitude,
               latitude: mapRegion.latitude
             }}
-          ></Marker>
+            title="Your Location"
+          />
+          {markers.map(marker => (
+            <MapView.Marker
+              coordinate={{
+                longitude: marker.coordinates.longitude,
+                latitude: marker.coordinates.latitude
+              }}
+              title={marker.title}
+            />
+          ))}
           <Circle
             center={{
               longitude: mapRegion.longitude,
@@ -230,33 +173,32 @@ export default function SearchParkingPage({ navigation }) {
       >
         <Text style={SearchParkingStyles.text_header}>Choose a date and a time</Text>
         <View>
-          <View style={{ flexDirection: 'row', alignContent: 'space-around' }} > 
-            <Button title="Pick start" onPress={() => showMode('entrancePicker')}></Button>
+          <View style={{ flexDirection: 'row', alignContent: 'space-around' }}>
             <Icon style={{ marginRight: 10 }} size={24} type='font-awesome-5' name="sign-in-alt" />
             <Text style={dateTimePickerStyles.header}>Entrance:</Text>
-            <Text style={dateTimePickerStyles.header}>{formatDateToText(dates.entranceDate)}</Text>
-            {show.entrancePicker && (
             <DateTimePicker
-              value={dates.entranceDate}
-              onChange={onChangeEntrance}
-            />)}
-
+              style={dateTimePickerStyles.entranceDateTime}
+              value={entranceDateTime}
+              mode='date'
+              onChange={changeEntraceDate}
+            >
+            </DateTimePicker>
           </View>
           <View style={{ flexDirection: 'row', alignContent: 'space-around', paddingTop: 20 }}>
-            <Button title="Pick exit" onPress={() => showMode('exitPicker')}></Button>
             <Icon style={{ marginRight: 10 }} size={24} type='font-awesome-5' name="sign-out-alt" />
             <Text style={dateTimePickerStyles.header}>Exit:</Text>
-            <Text style={dateTimePickerStyles.header}>{formatDateToText(dates.exitDate)}</Text>        
-            {show.exitPicker && (
             <DateTimePicker
-              value={dates.exitDate}
-              onChange={onChangeExit}
-            />)}
+              style={dateTimePickerStyles.exitDateTime}
+              value={exitDateTime}
+              mode='date'
+              onChange={changeExitDate}
+            >
+            </DateTimePicker>
           </View>
           <TouchableHighlight>
             <Button
-              title="Search Parking"
-              onPress={getParkingLots}
+              title="Reserve a parking"
+              onPress={getMacth}
               buttonStyle={{
                 backgroundColor: '#009387',
                 borderWidth: 2,

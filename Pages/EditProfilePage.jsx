@@ -9,16 +9,17 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import { useTheme, Avatar, TouchableRipple } from 'react-native-paper';
+import { useTheme, TouchableRipple } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
-const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/users/update';
+const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/users/';
 const emailValidationApi = 'ValidateEmail';
 const UsernameValidationApi = 'ValdiateUsername';
-const signupApi = 'signup';
+const updateApi = 'update';
 
 export default function EditProfilePage({ navigation, route }) {
+  const { Id, UserName, Email, FirstName, LastName  } = route.params;
   const [data, setData] = useState({
     username: '',
     firstName: '',
@@ -41,7 +42,7 @@ export default function EditProfilePage({ navigation, route }) {
       ...data,
       readyToPost: checkAllFields()
     });
-  }, [data.firstName, data.lastName, data.username_validity, data.password_validty, data.email_validity]);
+  }, [data.username,data.firstName, data.lastName, data.username_validity, data.password_validty, data.email_validity]);
 
   // const pickImage = async () => {
   //   // No permissions request is necessary for launching the image library
@@ -103,8 +104,8 @@ export default function EditProfilePage({ navigation, route }) {
   }
 
   const postUser = (user) => {
-    fetch(hostURL + signupApi, {
-      method: 'POST',
+    fetch(hostURL + updateApi , {
+      method: 'PUT',
       body: JSON.stringify(user),
       headers: new Headers({
         'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
@@ -118,7 +119,8 @@ export default function EditProfilePage({ navigation, route }) {
       })
       .then(
         (result) => {
-          console.log("fetch POST=", JSON.stringify(result));
+          console.log("fetch PUT=", JSON.stringify(result));
+          navigation.navigate('ProfilePage', {Id: user.Id, UserName: user.UserName, Email: user.Email, FirstName: user.FirstName, LastName: user.LastName});
         },
         (error) => {
           console.log("err POST=", error);
@@ -127,7 +129,7 @@ export default function EditProfilePage({ navigation, route }) {
 
   const updateUser = () => {
     let user = {
-      Id: route.Id,
+      Id: Id,
       UserName: data.username,
       Email: data.email,
       Password: data.password,
@@ -135,14 +137,23 @@ export default function EditProfilePage({ navigation, route }) {
       lastName: data.lastName
     }
     postUser(user);
-    navigation.navigate('LogIn');
   }
 
   const valdiateEmail = (email) => {
+    if(email===Email) 
+    {
+    data.email_validity=true;
+    renderV('email_validity');
+    }
     getUser(hostURL + email + "/" + emailValidationApi, 'email_validity');
   }
 
   const valdiateUsername = (username) => {
+    if(username===UserName)
+    {
+      data.username_validity=true;
+      return;
+    }
     getUser(hostURL + username + "/" + UsernameValidationApi, 'username_validity');
   }
 
@@ -321,9 +332,9 @@ export default function EditProfilePage({ navigation, route }) {
             }
           >
             {data.readyToPost ?
-              <Text style={[styles.textSign, { color: '#009387' }]}>Sign up</Text>
+              <Text style={[styles.textSign, { color: '#009387' }]}>Edit</Text>
               :
-              <Text style={[styles.textSign, { color: 'grey' }]}>Sign up</Text>
+              <Text style={[styles.textSign, { color: 'grey' }]}>Edit</Text>
             }
           </TouchableOpacity>
         </View>
