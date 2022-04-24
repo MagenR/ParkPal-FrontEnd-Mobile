@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, TouchableHighlight, Dimensions } from "react-native"
+import {StatusBar} from 'expo-status-bar'
+import { View, StyleSheet, Text, TouchableHighlight, Dimensions, Platform } from "react-native"
 import MapView, { Marker, Circle } from 'react-native-maps'
 import * as Location from 'expo-location'
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -7,6 +8,8 @@ import { Button } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
+import BottomSheet from 'reanimated-bottom-sheet';
+import Animated from 'react-native-reanimated';
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo';
 const hostURL = 'https://proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/SearchByCoordinatesAndTimeSlot?';
@@ -17,15 +20,33 @@ export default function SearchParkingPage({ navigation }) {
   const [mapRegion, setMapRegion] = useState(null);
   const [entranceDateTime, setEntranceDateTime] = useState(new Date());
   const [exitDateTime, setExitDateTime] = useState(new Date());
-  const [markers, setMarkers] = useState([])
+  // const [searchParams, setParams] = useState ({
+  //   entranceDateTime: new Date(),
+  //   exitDateTime: new Date(),
+  // });
+  const [showPicker, setShowPicker] = useState(false);
+  const [mode, setMode] = useState('date');
+  const [markers, setMarkers] = useState([]);
+
+  const bs = React.useRef(null);
+  const fall = new Animated.Value(1);
+
+  const showMode = (currentMode) => {
+    setShowPicker(true);
+    setMode(currentMode);
+  }
 
   const changeEntraceDate = (event, selectedDate) => {
     const currentDateTime = selectedDate || entranceDateTime;
+    setShowPicker(Platform.OS === "ios");
     setEntranceDateTime(currentDateTime);
+    
+    let tempDate = new Date(currentDate);
   };
 
   const changeExitDate = (event, selectedDate) => {
     const currentDateTime = selectedDate || exitDateTime;
+    setShowPicker(Platform.OS === "ios");
     setExitDateTime(currentDateTime);
   };
 
@@ -97,38 +118,86 @@ export default function SearchParkingPage({ navigation }) {
         });
   }
 
+  const renderInner = () => (
+    <View>   
+      {/* Location top search bar */} 
+      <GooglePlacesAutocomplete
+        placeholder="Search for Location"
+        fetchDetails={true}
+        nearbyPlacesAPI="GooglePlacesSearch"
+        debounce={400}
+        onPress={(data, details = null) => {
+          // 'details' is provided when fetchDetails = true
+          console.log(data, details)
+          setMapRegion({
+            latitude: details.geometry.location.lat,
+            longitude: details.geometry.location.lng,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421
+          })
+        }}
+        query={{
+          key: GOOGLE_MAPS_APIKEY,
+          types: "establishment",
+          location: `${mapRegion.latitude}, ${mapRegion.longitude}`
+        }}
+        textInputProps={{ placeholderTextColor: '#009387' }}
+        styles={searchInputBoxStyles}
+      />
+
+      <Icon style={{ marginRight: 10 }} size={24} type='font-awesome-5' name="sign-in-alt" />     
+      <Button title='Entrance Date' onPress={() => showMode('date')}></Button>
+      {/*<Text style={dateTimePickerStyles.header}>Entrance:</Text>*/}
+      <Text style={dateTimePickerStyles.header}>Entrance:</Text>
+      
+      <TouchableHighlight>
+        <Button
+          title="Reserve a parking"
+          onPress={getMacth}
+          buttonStyle={{
+            backgroundColor: '#009387',
+            borderWidth: 2,
+            borderColor: 'white',
+            borderRadius: 30,
+            margin: 20
+          }}
+        />
+      </TouchableHighlight>
+
+  </View>
+
+  );
+
+  const renderHeader = () => (
+    <Text>Testino</Text>
+  );
+
   return (
     <View style={SearchParkingStyles.container}>
-      <View style={{ marginTop: 50, alignItems: 'flex-start', paddingLeft: 10, paddingBottom: 5 }}>
+      <BottomSheet
+        ref={bs}
+        snapPoints={[330, 0]}
+        renderContent={renderInner}
+        renderHeader={renderHeader}
+        initialSnap={1}
+        callbackNode={fall}
+        enabledGestureInteraction={true}
+      >
+
+      </BottomSheet>
+      
+      <Button title='Search' onPress={() => bs.current.snapPoints(0)}></Button>
+      {/* Drawer (burger menu) */}
+      {/* <View style={{ marginTop: 50, alignItems: 'flex-start', paddingLeft: 10, paddingBottom: 5 }}> */}
+      <View>
         <TouchableHighlight onPress={() => navigation.openDrawer()}>
           <Icon type='font-awesome-5' name="bars" color="#777777" size={20} />
         </TouchableHighlight>
+        <Button ></Button>
       </View>
+     
       <View>
-        <GooglePlacesAutocomplete
-          placeholder="Search for Location"
-          fetchDetails={true}
-          nearbyPlacesAPI="GooglePlacesSearch"
-          debounce={400}
-          onPress={(data, details = null) => {
-            // 'details' is provided when fetchDetails = true
-            console.log(data, details)
-            setMapRegion({
-              latitude: details.geometry.location.lat,
-              longitude: details.geometry.location.lng,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421
-            })
-          }}
-          query={{
-            key: GOOGLE_MAPS_APIKEY,
-            types: "establishment",
-            location: `${mapRegion.latitude}, ${mapRegion.longitude}`
-          }}
-          textInputProps={{ placeholderTextColor: '#009387' }}
-          styles={searchInputBoxStyles}
-        />
-
+        {/* Map panel */}
         <MapView
           style={mapStyles.map}
           region={mapRegion}
@@ -156,6 +225,8 @@ export default function SearchParkingPage({ navigation }) {
               title={marker.title}
             />
           ))}
+
+          {/* Radius circle */}
           <Circle
             center={{
               longitude: mapRegion.longitude,
@@ -167,47 +238,41 @@ export default function SearchParkingPage({ navigation }) {
           ></Circle>
         </MapView>
       </View>
+
+      {/* Below map controllers */}
       <Animatable.View
         animation="fadeInUpBig"
         style={[SearchParkingStyles.footer]}
       >
         <Text style={SearchParkingStyles.text_header}>Choose a date and a time</Text>
+        
         <View>
+
           <View style={{ flexDirection: 'row', alignContent: 'space-around' }}>
-            <Icon style={{ marginRight: 10 }} size={24} type='font-awesome-5' name="sign-in-alt" />
-            <Text style={dateTimePickerStyles.header}>Entrance:</Text>
-            <DateTimePicker
+
+            {showPicker && <DateTimePicker
+            testID = 'datetimepicker'
               style={dateTimePickerStyles.entranceDateTime}
               value={entranceDateTime}
-              mode='date'
+              mode={mode}
               onChange={changeEntraceDate}
             >
-            </DateTimePicker>
+            </DateTimePicker>}
           </View>
-          <View style={{ flexDirection: 'row', alignContent: 'space-around', paddingTop: 20 }}>
+
+          {/* <View style={{ flexDirection: 'row', alignContent: 'space-around', paddingTop: 20 }}>
             <Icon style={{ marginRight: 10 }} size={24} type='font-awesome-5' name="sign-out-alt" />
             <Text style={dateTimePickerStyles.header}>Exit:</Text>
             <DateTimePicker
               style={dateTimePickerStyles.exitDateTime}
               value={exitDateTime}
-              mode='date'
+              mode={mode}
               onChange={changeExitDate}
             >
             </DateTimePicker>
-          </View>
-          <TouchableHighlight>
-            <Button
-              title="Reserve a parking"
-              onPress={getMacth}
-              buttonStyle={{
-                backgroundColor: '#009387',
-                borderWidth: 2,
-                borderColor: 'white',
-                borderRadius: 30,
-                margin: 20
-              }}
-            />
-          </TouchableHighlight>
+          </View> */}
+
+
         </View>
       </Animatable.View>
     </View>
@@ -239,7 +304,7 @@ const SearchParkingStyles = StyleSheet.create({
 const mapStyles = StyleSheet.create({
   map: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height * 0.5,
+    height: Dimensions.get("window").height,
   },
 })
 
