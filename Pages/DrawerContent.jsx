@@ -20,12 +20,12 @@ export default function DrawerContent(props) {
                         onPress={() => { props.navigation.navigate('SearchParkingPage') }}
                     />
                 </Drawer.Section>
-                {/* <Drawer.Section style={styles.drawerSection}>
+                <Drawer.Section style={styles.drawerSection}>
                     <DrawerItem
-                        label="Purchase history"
-                        onPress={() => { props.navigation.navigate('History') }}
+                        label="Auction page"
+                        onPress={() => { props.navigation.navigate('Auction') }}
                     />
-                </Drawer.Section> */}
+                </Drawer.Section>
             </DrawerContentScrollView >
         </View >
     );
