@@ -8,7 +8,7 @@ import ProfilePage from './Pages/ProfilePage';
 import EditProfilePage from './Pages/EditProfilePage';
 import DrawerNavigation from './ClassComponents/DrawerNavigator';
 import PaymentPage from './Pages/PaymentPage';
-import Auction from './Pages/Auction';
+//import Auction from './Pages/Auction';
 
 
 const Stack = createNativeStackNavigator(); 
@@ -25,7 +25,6 @@ export default function App() {
       <Stack.Screen name="ProfilePage" component={ProfilePage} options={{ headerShown: false }}/>
       <Stack.Screen name="EditProfilePage" component={EditProfilePage} options={{ headerShown: false }}/>
       <Stack.Screen name="SearchParkingPage" component={SearchParkingPage} options={{ headerShown: false }}/>
-      <Stack.Screen name="Auction" component={Auction} options={{ headerShown: false }}/>
       </Stack.Navigator>
     </NavigationContainer>
     
