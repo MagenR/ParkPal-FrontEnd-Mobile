@@ -8,12 +8,13 @@ import ProfilePage from './Pages/ProfilePage';
 import EditProfilePage from './Pages/EditProfilePage';
 import DrawerNavigation from './ClassComponents/DrawerNavigator';
 import PaymentPage from './Pages/PaymentPage';
+//import Auction from './Pages/Auction';
 
 
 const Stack = createNativeStackNavigator(); 
 
 export default function App() {
-  return (
+  return (   
     <NavigationContainer>
     <Stack.Navigator initialRouteName="DrawerNavigation">
       <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }}/>
@@ -29,4 +30,3 @@ export default function App() {
     
   );
 }
-
