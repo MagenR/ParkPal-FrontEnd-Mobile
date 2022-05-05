@@ -6,7 +6,7 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 export default function DrawerContent(props) {
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.container}>
             <DrawerContentScrollView {...props}>
                 <Drawer.Section style={styles.drawerSection}>
                     <DrawerItem
@@ -32,6 +32,9 @@ export default function DrawerContent(props) {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    },
     drawerSection: {
         marginTop: 15,
     },

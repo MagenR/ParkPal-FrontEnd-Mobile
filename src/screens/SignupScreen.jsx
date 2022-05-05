@@ -1,17 +1,17 @@
-import { TextInput, View, Text, StyleSheet, Button, StatusBar, Platform, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import  React, { useState, useEffect } from 'react';
+import { TextInput, View, Text, StyleSheet, StatusBar, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import React, { useState, useEffect } from 'react';
 
 const hostURL = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/users/';
 const emailValidationApi = 'ValidateEmail';
 const UsernameValidationApi = 'ValdiateUsername';
 const signupApi = 'signup';
 
-export default function SignUp({ navigation }) {
+export default function SignupScreen({ navigation }) {
 
-    const [data, setData] = React.useState({
+    const [data, setData] = useState({
         username: '',
         firstName: '',
         lastName: '',

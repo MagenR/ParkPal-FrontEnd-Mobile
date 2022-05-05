@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, } from 'react-native';
 import { Avatar, Title, Caption, TouchableRipple } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
 
-export default function ProfilePage({ route, navigation }) {
+export default function ProfileScreen({ route, navigation }) {
     const { Id, UserName, Email, FirstName, LastName  } = route.params;
     console.log("user: =======================" + Id + " " + UserName);
     return (

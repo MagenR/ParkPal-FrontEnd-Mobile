@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 
-export default function PaymentPage({ navigation, route }) {
+export default function PaymentScreen({ navigation, route }) {
     const {pName, pAdress} = route.params
     const [payment, setPayment] = useState({ cardNumber: '', expiration: '', cvv: '', id: '' })
 
