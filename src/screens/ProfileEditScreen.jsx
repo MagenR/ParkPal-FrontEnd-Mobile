@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Platform } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+// import * as ImagePicker from 'expo-image-picker';
 import * as Animatable from 'react-native-animatable';
 import { Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { useTheme, TouchableRipple } from 'react-native-paper';

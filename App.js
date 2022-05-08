@@ -26,7 +26,6 @@ export default function App() {
     //     <Stack.Screen name="SearchParkingScreen" component={SearchParkingScreen} options={{ headerShown: false }}/>
     //   </Stack.Navigator>
     // </NavigationContainer>
-    // <SearchParkingScreen />
-    <HomeScreen />
+    <SearchParkingScreen />
   );
 }

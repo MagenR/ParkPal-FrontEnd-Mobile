@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {StatusBar} from 'expo-status-bar'
+// import {StatusBar} from 'expo-status-bar'
 import { View, StyleSheet, Text, TouchableHighlight, Dimensions, Platform } from "react-native"
 import MapView, { Marker, Circle } from 'react-native-maps'
 import * as Location from 'expo-location'

@@ -8,11 +8,11 @@ const hostURL = 'https://proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/S
 export default function SearchParkingScreen() {
 
   const [searchParams, setParams] = useState({
-   //  latitude: 32.07473275692371,
-   //  longitude: 34.792109182901896,
+    latitude: 32.07473275692371,
+    longitude: 34.792109182901896,
 
-    latitude: 32.815635078809784,
-    longitude: 34.99974171574337,
+    // latitude: 32.815635078809784,
+    // longitude: 34.99974171574337,
 
     entranceDateTime: '2022-06-01T00:00:00',
     exitDateTime: '2022-06-01T12:00:00'
@@ -63,11 +63,11 @@ export default function SearchParkingScreen() {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
-        onRegionChange = {()=> setParams({
+        {/* onRegionChange = {()=> setParams({
           ...searchParams,
           latitude: region.latitude,
           longitude: region.longitude
-        })}
+        })} */}
         {parkingLots.length > 0 &&  parkingLots.map((parkingLot, index) => (
           <Marker
             key={parkingLot.Id}

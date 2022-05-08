@@ -4,7 +4,7 @@ import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
-import Icon from 'react-native-elements';
+// import Icon from 'react-native-elements';
 
 const apiUrl = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/users/loginUser'
 

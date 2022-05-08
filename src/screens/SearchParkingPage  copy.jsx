@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import Animated from 'react-native-reanimated';
+// import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 
 export default function SearchParkingPage({ navigation }) {

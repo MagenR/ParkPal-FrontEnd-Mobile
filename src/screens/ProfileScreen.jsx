@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, } from 'react-native';
 import { Avatar, Title, Caption, TouchableRipple } from 'react-native-paper';
-import { Icon } from 'react-native-elements';
+import { Icon } from '@rneui/base';
 
 export default function ProfileScreen({ route, navigation }) {
     const { Id, UserName, Email, FirstName, LastName  } = route.params;

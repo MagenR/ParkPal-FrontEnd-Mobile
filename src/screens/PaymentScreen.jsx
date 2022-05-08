@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Text, TouchableHighlight } from 'react-native';
-import { Input, Icon, Button } from 'react-native-elements';
+import { Input, Icon, Button } from '@rneui/base';
 import * as Animatable from 'react-native-animatable';
 
 export default function PaymentScreen({ navigation, route }) {
