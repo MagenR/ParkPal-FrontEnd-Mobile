@@ -33,20 +33,19 @@ export default function SearchParkingScreen() {
         'Content-type': 'application/json; charset=UTF-8'
       })
     })
-      .then(res => {
-        //console.log('res=', JSON.stringify(res));
-        //console.log('res.status=', JSON.stringify(res.status));
-        //console.log('res.ok=', JSON.stringify(res.ok));
-        return res.json(parkingLots);
+      .then(response => {
+        //console.log('response=', JSON.stringify(res));
+        //console.log('response.status=', JSON.stringify(res.status));
+        //console.log('response.ok=', JSON.stringify(res.ok));
+        return response.json(parkingLots);
       })
-      .then(
-        (result) => {
-          //console.log("fetch GET= ", JSON.stringify(result));
-          setParkingLots(result);
-          console.log(parkingLots);
+      .then(data => {
+          //console.log("fetch GET= ", JSON.stringify(data));
+          setParkingLots(data==='No matching parking lots found.' ? [] : data);
+          //console.log(parkingLots);   
         },
         (error) => {
-          console.log("err GET=", error);
+          console.log("error GET=", error);
         });
   }
 
@@ -62,12 +61,13 @@ export default function SearchParkingScreen() {
           longitude: searchParams.longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
-        }}>
-        {/* onRegionChange = {()=> setParams({
+        }}
+        onRegionChangeComplete = {(region)=> setParams({
           ...searchParams,
           latitude: region.latitude,
           longitude: region.longitude
-        })} */}
+        })}>
+
         {parkingLots.length > 0 &&  parkingLots.map((parkingLot, index) => (
           <Marker
             key={parkingLot.Id}
