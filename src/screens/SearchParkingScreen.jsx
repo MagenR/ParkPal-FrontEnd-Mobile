@@ -50,7 +50,6 @@ export default function SearchParkingScreen() {
         });
   }
 
-
   return (
     <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
       <View style={styles.container}>
@@ -64,6 +63,11 @@ export default function SearchParkingScreen() {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
+        onRegionChange = {()=> setParams({
+          ...searchParams,
+          latitude: region.latitude,
+          longitude: region.longitude
+        })}
         {parkingLots.length > 0 &&  parkingLots.map((parkingLot, index) => (
           <Marker
             key={parkingLot.Id}
