@@ -1,16 +1,18 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import DrawerNavigation from './src/navigation/DrawerNavigator';
-import HomeScreen from './src/screens/HomeScreen';
-import SignUp from './src/screens/SignupScreen';
-import LogIn from './src/screens/LoginScreen';
-import SearchParkingScreen from './src/screens/SearchParkingScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
-import EditProfileScreen from './src/screens/ProfileEditScreen';
-import PaymentScreen from './src/screens/PaymentScreen';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+// import DrawerNavigation from './src/navigation/DrawerNavigator';
+// import HomeScreen from './src/screens/HomeScreen';
+// import SignUp from './src/screens/SignupScreen';
+// import LogIn from './src/screens/LoginScreen';
+ import SearchParkingScreen from './src/screens/SearchParkingScreen';
+// import ProfileScreen from './src/screens/ProfileScreen';
+// import EditProfileScreen from './src/screens/ProfileEditScreen';
+// import PaymentScreen from './src/screens/PaymentScreen';
+
 //import Auction from './Screens/Auction';
 
-const Stack = createNativeStackNavigator(); 
+//const Stack = createNativeStackNavigator(); 
 
 export default function App() {
   return (   
@@ -26,6 +28,10 @@ export default function App() {
     //     <Stack.Screen name="SearchParkingScreen" component={SearchParkingScreen} options={{ headerShown: false }}/>
     //   </Stack.Navigator>
     // </NavigationContainer>
-    <SearchParkingScreen />
+    //<SearchParkingScreen />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SearchParkingScreen />
+    </GestureHandlerRootView>
+    
   );
 }

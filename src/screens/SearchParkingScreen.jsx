@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import BottomSheetTestScreen from './BottomSheetTestScreen';
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo';
 const hostURL = 'https://proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/SearchByCoordinatesAndTimeSlot?';
@@ -14,8 +15,11 @@ export default function SearchParkingScreen() {
     // latitude: 32.815635078809784,
     // longitude: 34.99974171574337,
 
-    entranceDateTime: '2022-06-01T00:00:00',
-    exitDateTime: '2022-06-01T12:00:00'
+    // entranceDateTime: '2022-06-01T00:00:00',
+    // exitDateTime: '2022-06-01T12:00:00'
+
+    entranceDateTime: '2022-04-01T07:00:00',
+    exitDateTime: '2022-04-01T12:10:00'
   });
 
   const [parkingLots, setParkingLots] = useState([]);
@@ -40,13 +44,21 @@ export default function SearchParkingScreen() {
         return response.json(parkingLots);
       })
       .then(data => {
-          //console.log("fetch GET= ", JSON.stringify(data));
+          console.log("fetch GET= ", JSON.stringify(data));
           setParkingLots(data==='No matching parking lots found.' ? [] : data);
           //console.log(parkingLots);   
         },
         (error) => {
           console.log("error GET=", error);
         });
+  }
+
+  const setMarkerColor = (givenType) => {
+    switch(givenType){
+      case 'full': return '#dc143c'; break;
+      case 'auctioned': return '#0000ff'; break;
+      case 'empty': return '#90ee90'; break;
+    }
   }
 
   return (
@@ -73,6 +85,7 @@ export default function SearchParkingScreen() {
             key={parkingLot.Id}
             coordinate={{latitude: parkingLot.Latitude, longitude: parkingLot.Longitude}}
             title={parkingLot.Name}
+            pinColor={setMarkerColor(parkingLot.Type)}
             //description={parkingLot.HourlyTariff}
           />
         ))}
@@ -88,7 +101,7 @@ export default function SearchParkingScreen() {
           />
           {/* <Ionicons name="ios-search" size={20} /> */}
         </View> 
-
+        <BottomSheetTestScreen />
       </View>
     </TouchableWithoutFeedback>
   );
