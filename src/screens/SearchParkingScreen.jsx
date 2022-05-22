@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import BottomSheetTestScreen from './BottomSheetTestScreen';
+import * as Animatable from 'react-native-animatable';
+import { Button } from 'react-native-paper';
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo';
 const hostURL = 'https://proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/SearchByCoordinatesAndTimeSlot?';
 
-export default function SearchParkingScreen() {
+export default function SearchParkingScreen({ navigation }) {
 
   const [searchParams, setParams] = useState({
     latitude: 32.07473275692371,
@@ -21,11 +22,17 @@ export default function SearchParkingScreen() {
     entranceDateTime: '2022-04-01T07:00:00',
     exitDateTime: '2022-04-01T12:10:00'
   });
-
   const [parkingLots, setParkingLots] = useState([]);
+  const [bookInfo, setBookInfo] = useState(null);
+  const [bookDialogueOpen, setOpenBookingDialogue] = useState(false);
+
+  // Test if parking lot was selected.
+  useEffect(() => {
+    console.log(bookInfo);
+  }, [bookInfo]);
 
   // At screen load, and every new initial point, search for lots around.
-  useEffect(() => { 
+  useEffect(() => {
     getParkingLots();
   }, [searchParams]);
 
@@ -44,64 +51,108 @@ export default function SearchParkingScreen() {
         return response.json(parkingLots);
       })
       .then(data => {
-          console.log("fetch GET= ", JSON.stringify(data));
-          setParkingLots(data==='No matching parking lots found.' ? [] : data);
-          //console.log(parkingLots);   
-        },
+        //console.log("fetch GET= ", JSON.stringify(data));
+        setParkingLots(data === 'No matching parking lots found.' ? [] : data);
+        //console.log(parkingLots);   
+      },
         (error) => {
           console.log("error GET=", error);
         });
   }
 
   const setMarkerColor = (givenType) => {
-    switch(givenType){
+    switch (givenType) {
       case 'full': return '#dc143c'; break;
       case 'auctioned': return '#0000ff'; break;
       case 'empty': return '#90ee90'; break;
     }
   }
 
+  const makeParkChoice = (id) => {
+    console.log("key = " + id);
+    setBookInfo({
+      ...bookInfo,
+      chosenPark: parkingLots.find(park => park.Id === id)
+    });
+    setOpenBookingDialogue(true);
+  }
+
   return (
-    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+    <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
       <View style={styles.container}>
-        
+
         {/* Map */}
         <MapView
-        style={styles.container}
-        initialRegion={{
-          latitude: searchParams.latitude,
-          longitude: searchParams.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-        onRegionChangeComplete = {(region)=> setParams({
-          ...searchParams,
-          latitude: region.latitude,
-          longitude: region.longitude
-        })}>
+          style={styles.container}
+          initialRegion={{
+            latitude: searchParams.latitude,
+            longitude: searchParams.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          onRegionChangeComplete={(region) => setParams({
+            ...searchParams,
+            latitude: region.latitude,
+            longitude: region.longitude
+          })}>
 
-        {parkingLots.length > 0 &&  parkingLots.map((parkingLot, index) => (
-          <Marker
-            key={parkingLot.Id}
-            coordinate={{latitude: parkingLot.Latitude, longitude: parkingLot.Longitude}}
-            title={parkingLot.Name}
-            pinColor={setMarkerColor(parkingLot.Type)}
+          {parkingLots.length > 0 && parkingLots.map((parkingLot, index) => (
+            <Marker
+              key={parkingLot.Id}
+              coordinate={{ latitude: parkingLot.Latitude, longitude: parkingLot.Longitude }}
+              title={parkingLot.Name}
+              pinColor={setMarkerColor(parkingLot.Type)}
+              onPress={() => makeParkChoice(parkingLot.Id)}
+            // onPress={()=>console.log(parkingLot.Id)}
             //description={parkingLot.HourlyTariff}
-          />
-        ))}
+            />
+          ))}
         </MapView>
-         
+
         {/* SearchBox */}
         <View style={styles.searchBox}>
-          <TextInput 
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('SearchParamsScreen')}
+          >
+            <Text style={{ paddingVertical: 5 }}>Search Here</Text>
+          </TouchableOpacity>
+          {/*<TextInput
             placeholder="Search here"
             placeholderTextColor="#000"
             autoCapitalize="none"
-            style={{flex:1,padding:0}}
+            style={{ flex: 1, padding: 0 }}
           />
-          {/* <Ionicons name="ios-search" size={20} /> */}
-        </View> 
-        <BottomSheetTestScreen />
+           <Ionicons name="ios-search" size={20} /> */}
+        </View>
+
+        {bookDialogueOpen &&
+          <Animatable.View
+            animation="fadeInUpBig"
+            style={[styles.footer]}
+          >
+            <Text>Name: {bookInfo.chosenPark.Name}</Text>
+            <Text>Address: {bookInfo.chosenPark.Address}</Text>
+            <Text>Hourly Tariff: {bookInfo.chosenPark.HourlyTariff}</Text>
+
+            <View style={{ marginTop: 10, justifyContent: 'space-between', flex: 2, flexDirection: 'row' }}>
+              <Button
+                style={{ height: 40 }}
+                icon="close"
+                mode="contained"
+                onPress={() => setOpenBookingDialogue(false)}>
+                cancel
+              </Button>
+              <Button
+                style={{ height: 40 }}
+                icon="check"
+                mode="contained"
+                onPress={() => console.log("Create booking function")}>
+                Book this lot
+              </Button>
+            </View>
+
+          </Animatable.View>}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -115,12 +166,12 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
   searchBox: {
-    position:'absolute', 
-    marginTop: Platform.OS === 'ios' ? 40 : 30, 
-    flexDirection:"row",
+    position: 'absolute',
+    marginTop: Platform.OS === 'ios' ? 40 : 30,
+    flexDirection: "row",
     backgroundColor: '#fff',
     width: '90%',
-    alignSelf:'center',
+    alignSelf: 'center',
     borderRadius: 5,
     padding: 10,
     shadowColor: '#ccc',
@@ -128,5 +179,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 5,
     elevation: 10,
+  },
+  footer: {
+    flex: Platform.OS === 'ios' ? 3 : 5,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 10,
+    paddingTop: 20
   },
 });

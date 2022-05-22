@@ -2,12 +2,12 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 
-export default function ButtomSheetTestScreen() {
+export default function ButtomSheet({props}) {
   // ref
   const bottomSheetRef = useRef(null);
 
   // variables
-  const snapPoints = useMemo(() => ['25%', '50%', '60%', '90%'], []);
+  const snapPoints = useMemo(() => ['25%', '90%'], []);
 
   // callbacks
   const handleSheetChanges = useCallback((index) => {
