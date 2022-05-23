@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFe
 import MapView, { Marker } from 'react-native-maps';
 import * as Animatable from 'react-native-animatable';
 import { Button } from 'react-native-paper';
+import BottomInfoPanel from "../components/BottomInfoPanel";
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo';
 const hostURL = 'https://proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/SearchByCoordinatesAndTimeSlot?';
@@ -26,9 +27,12 @@ export default function SearchParkingScreen({ navigation }) {
   const [bookInfo, setBookInfo] = useState(null);
   const [bookDialogueOpen, setOpenBookingDialogue] = useState(false);
 
+
   // Test if parking lot was selected.
   useEffect(() => {
-    console.log(bookInfo);
+    console.log('Bookinfo:' + bookInfo);
+    if (bookInfo === null)
+      setOpenBookingDialogue(false);
   }, [bookInfo]);
 
   // At screen load, and every new initial point, search for lots around.
@@ -74,11 +78,22 @@ export default function SearchParkingScreen({ navigation }) {
       ...bookInfo,
       chosenPark: parkingLots.find(park => park.Id === id)
     });
-    setOpenBookingDialogue(true);
+    if(!bookDialogueOpen)
+      setOpenBookingDialogue(true);
+  }
+
+  const closeBottomInfoPanel = () => {
+    setOpenBookingDialogue(false);
+  }
+
+  const handleMapPress = () => {
+    console.log('empty click!!')
+    Keyboard.dismiss();
+    setBookInfo(null);
   }
 
   return (
-    <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
+    //<TouchableWithoutFeedback onPress={() => { handleEmptyClick() }}>
       <View style={styles.container}>
 
         {/* Map */}
@@ -90,6 +105,7 @@ export default function SearchParkingScreen({ navigation }) {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
+          onPress={()=>handleMapPress()}
           onRegionChangeComplete={(region) => setParams({
             ...searchParams,
             latitude: region.latitude,
@@ -127,34 +143,40 @@ export default function SearchParkingScreen({ navigation }) {
         </View>
 
         {bookDialogueOpen &&
-          <Animatable.View
-            animation="fadeInUpBig"
-            style={[styles.footer]}
-          >
-            <Text>Name: {bookInfo.chosenPark.Name}</Text>
-            <Text>Address: {bookInfo.chosenPark.Address}</Text>
-            <Text>Hourly Tariff: {bookInfo.chosenPark.HourlyTariff}</Text>
+          <BottomInfoPanel
+            {...bookInfo}
+            closePanel={closeBottomInfoPanel}
+          />
 
-            <View style={{ marginTop: 10, justifyContent: 'space-between', flex: 2, flexDirection: 'row' }}>
-              <Button
-                style={{ height: 40 }}
-                icon="close"
-                mode="contained"
-                onPress={() => setOpenBookingDialogue(false)}>
-                cancel
-              </Button>
-              <Button
-                style={{ height: 40 }}
-                icon="check"
-                mode="contained"
-                onPress={() => console.log("Create booking function")}>
-                Book this lot
-              </Button>
-            </View>
+          // <Animatable.View
+          //   animation="fadeInUpBig"
+          //   style={[styles.footer]}
+          // >
+          //   <Text>Name: {bookInfo.chosenPark.Name}</Text>
+          //   <Text>Address: {bookInfo.chosenPark.Address}</Text>
+          //   <Text>Hourly Tariff: {bookInfo.chosenPark.HourlyTariff}</Text>
 
-          </Animatable.View>}
+          //   <View style={{ marginTop: 10, justifyContent: 'space-between', flex: 2, flexDirection: 'row' }}>
+          //     <Button
+          //       style={{ height: 40 }}
+          //       icon="close"
+          //       mode="contained"
+          //       onPress={() => setOpenBookingDialogue(false)}>
+          //       cancel
+          //     </Button>
+          //     <Button
+          //       style={{ height: 40 }}
+          //       icon="check"
+          //       mode="contained"
+          //       onPress={() => console.log("Create booking function")}>
+          //       Book this lot
+          //     </Button>
+          //   </View>
+
+          // </Animatable.View>
+        }
       </View>
-    </TouchableWithoutFeedback>
+    //</TouchableWithoutFeedback>
   );
 }
 
@@ -180,12 +202,5 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 10,
   },
-  footer: {
-    flex: Platform.OS === 'ios' ? 3 : 5,
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 10,
-    paddingTop: 20
-  },
+
 });
