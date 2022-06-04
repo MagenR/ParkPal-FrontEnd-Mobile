@@ -66,9 +66,9 @@ export default function SearchParkingScreen({ navigation }) {
 
   const setMarkerColor = (givenType) => {
     switch (givenType) {
-      case 'full': return '#dc143c'; break;
-      case 'auctioned': return '#0000ff'; break;
-      case 'empty': return '#90ee90'; break;
+      case 'full': return '#dc143c';
+      case 'auctioned': return '#0000ff';
+      case 'empty': return '#90ee90';
     }
   }
 
