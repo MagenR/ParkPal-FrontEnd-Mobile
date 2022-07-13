@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { useTheme } from '@react-navigation/native';
-// import Icon from 'react-native-elements'
+//import Icon from 'react-native-elements'
 
 export default function HomeScreen({ navigation }) {
     const { colors } = useTheme();
