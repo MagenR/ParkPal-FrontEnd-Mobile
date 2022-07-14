@@ -39,7 +39,7 @@ export default function ProfileScreen({ route, navigation }) {
                 </View>
             </View>
             <View style={styles.menuWrapper}>
-                <TouchableRipple onPress={() => navigation.navigate('SearchParkingPage')}>
+                <TouchableRipple onPress={() => navigation.navigate('SearchParkingScreen')}>
                     <View style={styles.menuItem}>
                         <Icon type='font-awesome-5' name="search-location" color="black" size={25} />
                         <Text style={styles.menuItemText}>Search Parking</Text>
