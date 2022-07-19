@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Animatable from 'react-native-animatable';
@@ -8,7 +8,7 @@ import BottomInfoPanel from "../components/BottomInfoPanel";
 const GOOGLE_MAPS_APIKEY = 'AIzaSyArFZoGYuzS-L1_XOqAP7KfwXVEzhwqfwo';
 const hostURL = 'https://proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkinglots/SearchByCoordinatesAndTimeSlot?';
 
-export default function SearchParkingScreen({ navigation }) {
+export default function SearchParkingScreen({ navigation, route }) {
 
   const [searchParams, setParams] = useState({
     latitude: 32.07473275692371,
@@ -27,6 +27,7 @@ export default function SearchParkingScreen({ navigation }) {
   const [bookInfo, setBookInfo] = useState(null);
   const [bookDialogueOpen, setOpenBookingDialogue] = useState(false);
 
+  const mapRef = useRef(null);
 
   // Test if parking lot was selected.
   useEffect(() => {
@@ -39,6 +40,30 @@ export default function SearchParkingScreen({ navigation }) {
   useEffect(() => {
     getParkingLots();
   }, [searchParams]);
+
+  // Get params from search screen back to here.
+  const setSearch = (results) => {
+      console.log(results);
+      setParams({
+        ...searchParams,
+        placeName: results.Query,
+        latitude: results.Latitude,
+        longitude: results.Longitude,
+        entranceDateTime: results.EnterDate + 'T' + results.EnterTime,
+        exitDateTime: results.ExitDate + 'T' + results.ExitTime,
+      });
+
+      goToLocation({
+        latitude: results.Latitude,
+        longitude: results.Longitude,
+        longitudeDelta: 0.004,
+        latitudeDelta: 0
+      },1000);
+  };
+
+  const goToLocation  = (location) => {
+    mapRef.current.animateToRegion(location);
+    };
 
   const getParkingLots = () => {
     fetch(hostURL + 'latitude=' + searchParams.latitude + '&longitude=' + searchParams.longitude + '&startTime=' + searchParams.entranceDateTime + '&endTime=' + searchParams.exitDateTime, {
@@ -66,7 +91,7 @@ export default function SearchParkingScreen({ navigation }) {
 
   const setMarkerColor = (givenType) => {
     switch (givenType) {
-      case 'full': return '#dc143c';
+      case 'full': return '#dc143c'; // was #dc143c
       case 'auctioned': return '#0000ff';
       case 'empty': return '#90ee90';
     }
@@ -110,7 +135,9 @@ export default function SearchParkingScreen({ navigation }) {
             ...searchParams,
             latitude: region.latitude,
             longitude: region.longitude
-          })}>
+          })}
+          ref={mapRef}
+          >
 
           {parkingLots.length > 0 && parkingLots.map((parkingLot, index) => (
             <Marker
@@ -129,7 +156,7 @@ export default function SearchParkingScreen({ navigation }) {
         <View style={styles.searchBox}>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('SearchParamsScreen')}
+            onPress={() => navigation.navigate('SearchParamsScreen', {onReturn: (results) => {setSearch(results)}})}
           >
             <Text style={{ paddingVertical: 5 }}>Search Here</Text>
           </TouchableOpacity>
