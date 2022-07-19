@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { Button } from 'react-native-paper';
 
-export default function BottomInfoPanel( props ) {
+export default function BottomInfoPanel(props) {
   // ref
   const bottomSheetRef = useRef(null);
 
@@ -18,7 +18,14 @@ export default function BottomInfoPanel( props ) {
   useEffect(() => {
     console.log(props);
   }, [])
-  
+
+  const handleReserveClick = () => {
+    const { Type } = props.chosenPark;
+    if (Type === 'full')
+      ToastAndroid.show('Parking lot is full!', ToastAndroid.SHORT)
+    else
+      props.navigation.navigate('ReserveParkingLot', { chosenPark: props.chosenPark })
+  };
 
   // renders
   return (
@@ -30,11 +37,13 @@ export default function BottomInfoPanel( props ) {
       onChange={handleSheetChanges}
     >
       <View style={[styles.footer]}>
-      {props.chosenPark && <View>
-        <Text>Name: {props.chosenPark.Name}</Text>
-        <Text>Address: {props.chosenPark.Address}</Text>
-        <Text>Hourly Tariff: {props.chosenPark.HourlyTariff}</Text>
-      </View>}
+        {props.chosenPark &&
+          <View>
+            <Text>Name: {props.chosenPark.Name}</Text>
+            <Text>Address: {props.chosenPark.Address}</Text>
+            <Text>Hourly Tariff: {props.chosenPark.HourlyTariff}</Text>
+          </View>
+        }
         <View style={{ marginTop: 10, justifyContent: 'space-between', flex: 2, flexDirection: 'row' }}>
           <Button
             style={{ height: 40 }}
@@ -47,7 +56,7 @@ export default function BottomInfoPanel( props ) {
             style={{ height: 40 }}
             icon="check"
             mode="contained"
-            onPress={() => console.log("Create booking function")}>
+            onPress={handleReserveClick}>
             Book this lot
           </Button>
         </View>

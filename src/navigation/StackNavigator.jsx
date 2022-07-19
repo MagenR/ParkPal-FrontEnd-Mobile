@@ -12,6 +12,8 @@ import SearchParkingScreen from '../screens/SearchParkingScreen';
 // import ProfileEditScreen from '../screens/ProfileEditScreen';
 // import PaymentScreen from './screens/PaymentScreen';
 // import Auction from './screens/Auction';
+import ReserveParkingLotScreen from '../screens/ReserveParkingLotScreen';
+import AuctionScreen from '../screens/AuctionScreen';
 
 const Stack = createNativeStackNavigator(); 
 
@@ -29,6 +31,10 @@ export default function StackNavigator() {
         <Stack.Screen name="ProfileEditScreen" component={ProfileEditScreen} options={{ headerShown: false }} />
         <Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{ headerShown: false }} /> 
         <Stack.Screen name="DrawerNavigation" component={DrawerNavigation} options={{ headerShown: false }} />*/}
+      
+        <Stack.Screen name="ReserveParkingLot" component={ReserveParkingLotScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="AuctionScreen" component={AuctionScreen} options={{ headerShown: false }} />
+      
       </Stack.Navigator>
     </NavigationContainer>
   )

@@ -51,13 +51,19 @@ export default function SearchParkingScreen({ navigation, route }) {
         longitude: results.Longitude,
         entranceDateTime: results.EnterDate + 'T' + results.EnterTime,
         exitDateTime: results.ExitDate + 'T' + results.ExitTime,
+        EnterDate: results.EnterDate,
+        ExitDate: results.ExitDate,
+        EnterTime: results.EnterTime,
+        ExitTime: results.ExitTime
       });
 
       goToLocation({
         latitude: results.Latitude,
         longitude: results.Longitude,
-        longitudeDelta: 0.004,
-        latitudeDelta: 0
+        // longitudeDelta: 0.004,
+        // latitudeDelta: 0
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
       },1000);
   };
 
@@ -101,7 +107,11 @@ export default function SearchParkingScreen({ navigation, route }) {
     console.log("key = " + id);
     setBookInfo({
       ...bookInfo,
-      chosenPark: parkingLots.find(park => park.Id === id)
+      chosenPark: parkingLots.find(park => park.Id === id),
+      EnterDate: searchParams.EnterDate,
+      ExitDate: searchParams.ExitDate,
+      EnterTime: searchParams.EnterTime,
+      ExitTime: searchParams.ExitTime
     });
     if(!bookDialogueOpen)
       setOpenBookingDialogue(true);
@@ -173,6 +183,7 @@ export default function SearchParkingScreen({ navigation, route }) {
           <BottomInfoPanel
             {...bookInfo}
             closePanel={closeBottomInfoPanel}
+            navigation={navigation}
           />
 
           // <Animatable.View
