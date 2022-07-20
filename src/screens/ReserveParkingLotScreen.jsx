@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View, ToastAndroid } from 'react-native';
 import { Button, Checkbox } from 'react-native-paper';
 
 
@@ -70,6 +70,7 @@ export default function ReserveParkingLotScreen(props) {
       .then(
         (result) => {
           console.log("fetch POST=", JSON.stringify(result));
+          ToastAndroid.show(result > 0 ? "Parking Reserved!" : "Not Reserved!", ToastAndroid.SHORT)
         },
         (error) => {
           console.log("err POST=", error);

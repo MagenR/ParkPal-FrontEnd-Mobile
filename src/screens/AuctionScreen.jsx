@@ -10,7 +10,7 @@ export default function AuctionScreen({navigation, route}) {
   const { chosenPark, EntranceDateTime, ExitDateTime, ExitTime,
     ExitDate, EnterTime, EnterDate } = route.params;
 
-  const UserId = 12; //UserName
+  const UserId = 8; //UserName
   // ============================ hooks
 
   const [maxPayment, setMaxPayment] = useState(0);
@@ -117,7 +117,7 @@ export default function AuctionScreen({navigation, route}) {
           <Text style={styles.detail}>Starting price: {auction.StartingPrice}</Text>
           {auction.HighestBidder !== null && <Text style={styles.detail}>CurrentBid: {auction.CurrBid}</Text>}
           {/* {auction.HighestBidder !== null && <Text style={styles.detail}>Current Leader {}</Text>} */}
-          {auction.HighestBidder.Id === UserId ? <Text style={styles.detail}> You are leading!</Text> : null}
+          {/* {typeof auction.HighestBidder.Id !== null && auction.HighestBidder.Id === UserId ? <Text style={styles.detail}> You are leading!</Text> : null} */}
         </View>
       ))}
     </View>

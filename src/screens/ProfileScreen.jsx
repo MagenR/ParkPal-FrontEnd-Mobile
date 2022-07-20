@@ -27,7 +27,7 @@ export default function ProfileScreen({ route, navigation }) {
         })
             .then(res => { return res.json() })
             .then(res => {
-                setfutureReserves(res === 'Reservation DB is empty for this user.' ? [] : res);
+                setfutureReserves(res === 'Reservation DB is empty for this user.\n' ? [] : res);
                 console.log(res)
             })
     }
