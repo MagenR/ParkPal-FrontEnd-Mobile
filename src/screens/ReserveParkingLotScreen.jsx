@@ -1,215 +1,233 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Button } from 'react-native-paper';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, Checkbox } from 'react-native-paper';
 
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+
+const apiUrlReserve = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/parkingarrangements/reserve';
+const apiUrlAuction = 'https://Proj.ruppin.ac.il/bgroup52/test2/tar6/api/auctions/reserve';
 
 export default function ReserveParkingLotScreen(props) {
 
-    const { chosenPark } = props.route.params;
-    const { Name, Address, HourlyTariff, Type } = chosenPark;
+  // ============================ vars
+  const { chosenPark } = props.route.params;
+  const { Id, Name, Address, HourlyTariff, NumOfSpaces, Type } = chosenPark;
+  const { EntranceDateTime, ExitDateTime, ExitTime, ExitDate, EnterTime, EnterDate } = props.route.params; // add user Id.
+  const TotalPayment = (ExitDateTime - EntranceDateTime) / (1000 * 60 * 60) * HourlyTariff;
 
-    // ============================ hooks
+  // ============================ hooks
+  const [isSelected, setChecked] = useState(false);
+  const [maxPayment, setMaxPayment] = useState(0);
+  //const [TotalPayment, setTotalPayment] = useState((ExitDateTime - EntraceDateTime) / (1000 * 60 * 60) * HourlyTariff);
+  //const [totalPayment, setTotalPayment] = useState(null);
 
-    const [entrance, setEntrance] = useState({
-        show: false,
-        date: null, 
-        time: null
-    });
+  // ============================ handlers
 
-    const [exit, setExit] = useState({
-        show: false,
-        date: null,
-        time: null
-    });
+  // useEffect(() => {
+  //   console.log(props.route.params);
+  //   setTotalPayment(TotalPayment.toFixed(2));
+  // }, [])
 
-    const [totalPayment, setTotalPayment] = useState();
+  //const prepareDate = (dateObj) => { // formats date object for payment calculations
+  //    return new Date(`${dateObj.date}T${dateObj.time}`);
+  //}
 
-    useEffect(() => {
-        if (!entrance.date || !exit.date)
-            return;
-
-        const diff = prepareDate(exit) - prepareDate(entrance);
-        const totalPayment = diff / (1000 * 60 * 60) * HourlyTariff;
-
-        setTotalPayment(totalPayment.toFixed(2))
-    }, [entrance, exit])
-
-    // ============================ handlers
-
-    const prepareDate = (dateObj) => { // formats date object for payment calculations
-        return new Date(`${dateObj.date}T${dateObj.time}`);
-    }
-
-    const showDateTimePicker = (set) => { set(prevState => { return { ...prevState, show: true} })}
-
-    const handleDateChange = (type, selectedDate) => { // called when user confirms datetimepicker
-        const dateConfig = {
-            show: false,
-            date: selectedDate.toISOString().split('T')[0],
-            time: selectedDate.toLocaleTimeString(),
+  // 
+  const handlePost = () => {
+    let arrangement = {
+      Buyer: {
+        Id: 3
+      },
+      ParentSpot: {
+        ParentLot: {
+          Id: Id,
+          NumOfSpaces: NumOfSpaces
         }
-
-        if (type === 'entrance') 
-            setEntrance(dateConfig)
-        else if (type === 'exit')
-            setExit(dateConfig)
+      },
+      StartTime: EntranceDateTime,
+      EndTime: ExitDateTime
     }
 
-    const handlePageSwitch = () => { // moves to next page and called when user finished flow and clicks confirm
-        const params = { 
-            chosenPark, 
-            totalPayment,
-            entrance,
-            exit
-        };
+    let auction = {
+      SoldArrangement: arrangement,
+      StartingPrice: maxPayment  
+    }
 
-        let page;
+    console.log(isSelected ? auction : arrangement);
 
-        if (Type === 'empty')   
-            page = 'PaymentScreen';
-        else                    
-            page = 'AuctionScreen';
+    fetch(isSelected ? apiUrlAuction : apiUrlReserve, {
+      method: 'POST',
+      body: JSON.stringify(isSelected ? auction : arrangement),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8'
+      })
+    })
+      .then(res => {
+        //console.log('res=', JSON.stringify(res));
+        console.log('res.status=', JSON.stringify(res.status));
+        console.log('res.ok=', JSON.stringify(res.ok));
+        return res.json();
+      })
+      .then(
+        (result) => {
+          console.log("fetch POST=", JSON.stringify(result));
+        },
+        (error) => {
+          console.log("err POST=", error);
+        });
+  }
 
-        props.navigation.navigate(page, params)
+  const handleTextChange = (text) => { setMaxPayment(Number(text)) };
+
+
+  const handlePageSwitch = () => { // moves to next page and called when user finished flow and clicks confirm
+    const params = {
+      chosenPark,
+      TotalPayment,
+      EntraceDateTime,
+      ExitDateTime
     };
 
-    const canReserveParkingSpot = entrance.date && entrance.time && exit.date && exit.time && totalPayment > 0;
+    props.navigation.navigate('PaymentScreen', params)
+  };
 
-    // ============================ JSX
+  const canReserveParkingSpot = TotalPayment > 0;
 
-    return (<>
-        <Text style={styles.title}>Parking Details</Text>
+  // ============================ JSX
 
-        <View style={styles.detailsContainer}>
-            <Text style={styles.detail}>Name: {Name}</Text>
-            <Text style={styles.detail}>Address: {Address}</Text>
-            <Text style={styles.detail}>Hourly Tariff: {HourlyTariff}</Text>
+  return (
+    <View>
+      <Text style={styles.title}>Parking Details</Text>
+
+      <View style={styles.detailsContainer}>
+        <Text style={styles.detail}>Name: {Name}</Text>
+        <Text style={styles.detail}>Address: {Address}</Text>
+        <Text style={styles.detail}>Hourly Tariff: {HourlyTariff}</Text>
+      </View>
+
+      <View>
+
+        <View style={styles.entranceContainer}>
+          <View>
+            <Text style={styles.dateDetail}>Entrace date: {EnterDate}</Text>
+            <Text style={styles.dateDetail}>Entrace time: {EnterTime}</Text>
+          </View>
         </View>
 
-        <View>
+      </View>
 
-            <View style={styles.entranceContainer}>
+      <View>
 
-                <View>
-                    <Text style={styles.dateDetail}>Entrance date: {entrance.date}</Text>
-                    <Text style={styles.dateDetail}>Entrance time: {entrance.time?.slice(0,5)}</Text>
-                </View>
-
-                <Button
-                    style={styles.button}
-                    mode="contained"
-                    onPress={() => showDateTimePicker(setEntrance)}
-                >
-                    {entrance.show ? 'Close' : 'Choose'}
-                </Button>
-            </View>
-
-            { entrance.date &&
-                <View style={styles.entranceContainer}>
-                    <View>
-                        <Text style={styles.dateDetail}>Exit date: {exit.date}</Text>
-                        <Text style={styles.dateDetail}>Exit time: {exit.time?.slice(0,5)}</Text>
-                    </View>
-                    <Button
-                        style={styles.button}
-                        mode="contained"
-                    onPress={() => showDateTimePicker(setExit)}
-                    >
-                        {exit.show ? 'Close' : 'Choose'}
-                    </Button>
-                </View>
-            }
-
+        <View style={styles.entranceContainer}>
+          <View>
+            <Text style={styles.dateDetail}>Exit date: {ExitDate}</Text>
+            <Text style={styles.dateDetail}>Exit time: {ExitTime}</Text>
+          </View>
         </View>
 
-        <View>
-            <DateTimePickerModal
-                isVisible={entrance.show}
-                mode="datetime"
-                minimumDate={new Date()}
-                onConfirm={(dateTime) => handleDateChange('entrance', dateTime)}
-                onCancel={() => setEntrance(prevState => { return { ...prevState, show: false} })}
+      </View>
+
+      <View>
+
+        {/* {<Text style={styles.payment}>Total payment: {TotalPayment}</Text>} */}
+
+        <View style={styles.checkboxContainer}>
+          <Checkbox
+            status={isSelected ? 'checked' : 'unchecked'}
+            onPress={() => {
+              setChecked(!isSelected);
+            }}
+          />
+          <Text style={styles.label}>Set as future auction</Text>
+        </View>
+
+        {isSelected &&
+          <View style={styles.detailsContainer}>
+            <Text style={styles.detail}>Enter minimal price:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder='Amount'
+              placeholderTextColor='#cdd0d2'
+              onChangeText={handleTextChange}
+              keyboardType='decimal-pad'
             />
-        
-            <DateTimePickerModal
-                isVisible={exit.show}
-                mode="datetime"
-                minimumDate={new Date(entrance.date)}
-                onConfirm={(dateTime) => handleDateChange('exit', dateTime)}
-                onCancel={() => setExit(prevState => { return { ...prevState, show: false} })}
-            />
-        </View>
+          </View>
 
-        { canReserveParkingSpot &&
-            <>
-                { Type === 'empty' && <Text style={styles.payment}>Total payment: {totalPayment}</Text> }
-                <View style={styles.confirmContainer}>
-                    <Button 
-                        style={styles.button}
-                        mode="contained"
-                        onPress={handlePageSwitch}
-                    >
-                        { Type === 'empty' ? 'Confirm' : 'Auction'} 
-                    </Button>
-                </View>
-            </>                
         }
 
-        { totalPayment <= 0 && <Text style={styles.error}>Exit time must be after entrance time!</Text>}
+        <View style={styles.confirmContainer}>
+          <Button
+            style={styles.button}
+            mode="contained"
+            onPress={handlePost}
+          >
+            Confirm
+          </Button>
+        </View>
 
-    </>)
-};
+      </View>
 
+    </View>
+  );
+}
 // ================================== styles
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        textDecorationLine: 'underline',
-        alignSelf: 'center',
-        marginTop: 20
-    },
-    detailsContainer: {
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 4,
-        padding: 10,
-        margin: 10,
-    },
-    detail: {
-        fontSize: 20,
-        margin: 10
-    },
-    entranceContainer: {
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        margin: 10,
-        padding: 10,
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 4,
-    },
-    dateDetail: {
-        fontSize: 15
-    },
-    confirmContainer: {
-        marginTop: 12,
-        alignSelf: 'center'
-    },
-    payment: {
-        fontSize: 20,
-        margin: 40,
-        alignSelf: 'center'
-    },
-    button: {
-        padding: 4,
-        backgroundColor: '#009387'
-    },
-    error: {
-        fontSize: 20,
-        margin: 30,
-        color: 'red'
-    }
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+    alignSelf: 'center',
+    marginTop: 20
+  },
+  detailsContainer: {
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    margin: 10,
+  },
+  detail: {
+    fontSize: 15,
+    margin: 10
+  },
+  entranceContainer: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    margin: 10,
+    padding: 10,
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 4,
+  },
+  dateDetail: {
+    fontSize: 15
+  },
+  confirmContainer: {
+    marginTop: 12,
+    alignSelf: 'center'
+  },
+  payment: {
+    fontSize: 20,
+    margin: 40,
+    alignSelf: 'center'
+  },
+  button: {
+    padding: 4,
+    backgroundColor: '#009387'
+  },
+  error: {
+    fontSize: 20,
+    margin: 30,
+    color: 'red'
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: "center",
+  },
+  label: {
+    margin: 8,
+  },
 });

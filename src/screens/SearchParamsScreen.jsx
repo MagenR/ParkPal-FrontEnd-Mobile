@@ -117,13 +117,13 @@ export default function SearchParamsScreen({ navigation, route }) {
 
       <View style={styles.entranceContainer}>
 
-        <View>
+        <View style={styles.IndivItem}>
           <Text style={styles.dateDetail}>Entrance date: {searchParams.enterDate}</Text>
           <Text style={styles.dateDetail}>Entrance time: {searchParams.enterTime?.slice(0, 5)}</Text>
         </View>
 
         <Button
-          style={{ height: 40 }}
+          style={{ height: 40, margin: 15 }}
           mode="contained"
           onPress={() => configureDateTime('Start')}
         >
@@ -134,13 +134,13 @@ export default function SearchParamsScreen({ navigation, route }) {
 
       <View style={styles.entranceContainer}>
 
-        <View>
+        <View style={styles.IndivItem}>
           <Text style={styles.dateDetail}>Exit date: {searchParams.exitDate}</Text>
           <Text style={styles.dateDetail}>Exit time: {searchParams.exitTime?.slice(0, 5)}</Text>
         </View>
 
         <Button
-          style={{ height: 40 }}
+          style={{ height: 40, margin: 15 }}
           mode="contained"
           onPress={() => configureDateTime('Exit')}
           disabled={searchParams.enterDate === null} // disabled if no entry date is set.
@@ -151,7 +151,7 @@ export default function SearchParamsScreen({ navigation, route }) {
       </View>
 
       <Button
-        style={{ height: 40 }}
+        style={{ height: 40, margin: 15 }}
         mode="contained"
         onPress={() => NavigateBack()}
         disabled={searchParams.searchQuery === null ||
@@ -182,6 +182,12 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 25,
     paddingHorizontal: 20
+  },
+  IndivItem: {
+    margin: 15,
+  },
+  dateDetail: {
+    margin: 10
   }
 });
 
@@ -198,5 +204,5 @@ const searchInputBoxStyles = StyleSheet.create({
     borderWidth: 2,
     fontSize: 15,
     fontWeight: 'bold'
-  },
+  }
 });

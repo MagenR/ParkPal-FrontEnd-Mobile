@@ -20,8 +20,15 @@ export default function SearchParkingScreen({ navigation, route }) {
     // entranceDateTime: '2022-06-01T00:00:00',
     // exitDateTime: '2022-06-01T12:00:00'
 
+    placeName: 'Tel Aviv',
+
+    EnterDate: '2022-04-01',
+    ExitDate: '2022-04-01',
+    EnterTime: '07:00:00',
+    ExitTime: '10:00:00',
+
     entranceDateTime: '2022-04-01T07:00:00',
-    exitDateTime: '2022-04-01T12:10:00'
+    exitDateTime: '2022-04-01T10:00:00'
   });
   const [parkingLots, setParkingLots] = useState([]);
   const [bookInfo, setBookInfo] = useState(null);
@@ -108,10 +115,17 @@ export default function SearchParkingScreen({ navigation, route }) {
     setBookInfo({
       ...bookInfo,
       chosenPark: parkingLots.find(park => park.Id === id),
+      
+      //UserId: props.route.params.Id,
+      //UserName: props.route.params.UserName,
+
       EnterDate: searchParams.EnterDate,
       ExitDate: searchParams.ExitDate,
       EnterTime: searchParams.EnterTime,
-      ExitTime: searchParams.ExitTime
+      ExitTime: searchParams.ExitTime,
+      
+      EntranceDateTime: searchParams.entranceDateTime,
+      ExitDateTime: searchParams.exitDateTime,
     });
     if(!bookDialogueOpen)
       setOpenBookingDialogue(true);

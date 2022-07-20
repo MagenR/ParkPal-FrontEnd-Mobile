@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ToastAndroid } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { Button } from 'react-native-paper';
 
@@ -23,8 +23,27 @@ export default function BottomInfoPanel(props) {
     const { Type } = props.chosenPark;
     if (Type === 'full')
       ToastAndroid.show('Parking lot is full!', ToastAndroid.SHORT)
+    else if (Type === 'auctioned')
+      props.navigation.navigate('AuctionScreen', {
+        chosenPark: props.chosenPark,
+        EnterDate: props.EnterDate,
+        ExitDate: props.ExitDate,
+        EnterTime: props.EnterTime,
+        ExitTime: props.ExitTime,
+        EntranceDateTime: props.EntranceDateTime,
+        ExitDateTime: props.ExitDateTime
+      });
     else
-      props.navigation.navigate('ReserveParkingLot', { chosenPark: props.chosenPark })
+      props.navigation.navigate('ReserveParkingLot', {
+        chosenPark: props.chosenPark,
+        EnterDate: props.EnterDate,
+        ExitDate: props.ExitDate,
+        EnterTime: props.EnterTime,
+        ExitTime: props.ExitTime,
+        EntranceDateTime: props.EntranceDateTime,
+        ExitDateTime: props.ExitDateTime
+      })
+
   };
 
   // renders
@@ -82,6 +101,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: 10,
-    paddingTop: 20
+    paddingTop: 5
   },
 });
