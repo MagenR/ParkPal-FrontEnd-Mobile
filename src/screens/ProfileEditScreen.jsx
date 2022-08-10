@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Platform } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+// import * as ImagePicker from 'expo-image-picker';
 import * as Animatable from 'react-native-animatable';
-import {
-  Text,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-} from 'react-native';
-
+import { Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { useTheme, TouchableRipple } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -18,7 +12,7 @@ const emailValidationApi = 'ValidateEmail';
 const UsernameValidationApi = 'ValdiateUsername';
 const updateApi = 'update';
 
-export default function EditProfilePage({ navigation, route }) {
+export default function ProfileEditScreen({ navigation, route }) {
   const { Id, UserName, Email, FirstName, LastName  } = route.params;
   const [data, setData] = useState({
     username: '',
