@@ -5,6 +5,8 @@ import HomeScreen from '../screens/HomeScreen';
 import SignupScreen from '../screens/SignupScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SearchParamsScreen from '../screens/SearchParamsScreen'
+//import DrawerNavigation from './DrawerNavigator';
+//import SearchParamsScreen from '../screens/SearchParamsScreen'
 import SearchParkingScreen from '../screens/SearchParkingScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ProfileEditScreen from '../screens/ProfileEditScreen';
@@ -19,12 +21,14 @@ export default function StackNavigator() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomeScreen">   
+      <Stack.Navigator initialRouteName="HomeScreen">
+      {/*</Stack.Navigator><Stack.Navigator initialRouteName="DrawerNavigation">*/}    
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />     
         <Stack.Screen name="SignupScreen" component={SignupScreen} options={{ headerShown: false }} />        
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SearchParkingScreen" component={SearchParkingScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SearchParamsScreen" component={SearchParamsScreen} options={{ headerShown: true }} />
+        <Stack.Screen name="SearchParamsScreen" component={SearchParamsScreen} options={{ headerShown: true }} />  
+        {/* <Stack.Screen name="SearchParamsScreen" component={SearchParamsScreen} options={{ headerShown: true }} /> */}
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProfileEditScreen" component={ProfileEditScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ReserveParkingLot" component={ReserveParkingLotScreen} options={{ headerShown: false }} />
