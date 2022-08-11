@@ -7,14 +7,13 @@ import StackNavigator from './src/navigation/StackNavigator'
 export default function App() {
   return (
 
-    <StackNavigator />
     // <GestureHandlerRootView style={{ flex: 1 }}>
     //   <SearchParkingScreen />
     // </GestureHandlerRootView>
 
-    //<GestureHandlerRootView style={{ flex: 1 }}>
-  
-    //</GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <StackNavigator />
+    </GestureHandlerRootView>
 
     //<SearchParamsScreen />
   );
